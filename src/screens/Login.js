@@ -66,10 +66,14 @@ export default class LoginScreen extends Component {
             }));
             this.props.navigation.navigate('App')
         }
+        else if (respons.status == 401) {
+          that.setState({isLoading : false, password : ''});
+          var msg = await respons.json();
+          alert('Gagal Login : '+msg.error);
+        }
         else{
-            that.setState({isLoading : false, password : ''});
-            var msg = await respons.json();
-            alert('Gagal Login : '+msg.error);
+          that.setState({isLoading : false, password : ''});
+          alert('Gagal Login : '+respons.status);
         }
     }
 }
