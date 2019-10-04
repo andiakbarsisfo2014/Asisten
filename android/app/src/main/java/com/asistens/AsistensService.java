@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat;
 import android.app.NotificationManager;
 import android.app.NotificationChannel;
 import android.os.Build;
+import android.os.Bundle;
 
 import com.facebook.react.HeadlessJsTaskService;
 
@@ -26,6 +27,9 @@ public class AsistensService extends Service {
         public void run() {
             Context context = getApplicationContext();
             Intent myIntent = new Intent(context, AsistensEventService.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("foo", "bar");
+            myIntent.putExtras(bundle);
             context.startService(myIntent);
             HeadlessJsTaskService.acquireWakeLockNow(context);
             // handler.postDelayed(this, 1000);
