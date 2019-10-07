@@ -1,34 +1,44 @@
 /**
  * @format
  */
-
-import {AppRegistry} from 'react-native';
+import React from 'react';
+import {AppRegistry, Text} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import AsistensService from './AsistensService';
-// import Other from './src/screens/Praktikum';
-const AsistenHeadless = async () => {
-  // var socket = await SocketIOClient('http://103.55.216.17:3000', {transports: ['websocket'], pingTimeout: 30000});
-  // socket.on('new_regist_client', (data) => {
-  //   console.warn('msg','connected!');
-  //   Heartbeat.showNotif();
-  // });
-  alert('fuck');
-  AsistensService.showNotif();
+import {setDetik, store} from './store';
 
-  // store.dispatch(setHeartBeat(true));
-  // setTimeout(() => {
-    // Heartbeat.showNotif();
-    // store.dispatch(setHeartBeat(false));
-  // }, 1000);
-};
-const Other = () => {
-  console.warn('msg',this.props)
-  return (
-    null
-  )
+import { Provider, connect } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
+
+import Akbar from './Akbar';
+
+function counter(state, action) {
+  if (typeof state === 'undefined') {
+    return 0;
+  }
+  return state;
 }
+let store = createStore(combineReducers({ count: counter }));
+let CountContainer = connect(state => ({ value: state.count }))(Count);
+
+const AsistenHeadless = async (data) => {
+  console.log(data);
+};
+
+
+class Main extends React.Component {
+  render(){
+    
+    return (
+      <Provider store={store}>
+        {/* <Akbar /> */}
+        <App screenProps={{fromNotif : this.props.fromNotifi}} />        
+      </Provider>
+    )
+  }
+}
+
 AsistensService.startService();
 AppRegistry.registerHeadlessTask('AsistensService', () => AsistenHeadless);
-AppRegistry.registerComponent(appName, () => App);
-AppRegistry.registerComponent('Coba', () => Other);
+AppRegistry.registerComponent(appName, () => Main);

@@ -1,6 +1,8 @@
 package com.asistens;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import android.os.Bundle;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +14,16 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "Asistens";
   }
+
+  @Override
+  protected ReactActivityDelegate createReactActivityDelegate() {
+  	return new ReactActivityDelegate(this, getMainComponentName()) {
+  		@Override
+  		protected Bundle getLaunchOptions() {
+  			Bundle initialProperties = new Bundle();
+  			initialProperties.putBoolean("fromNotifi",false);
+       			return initialProperties;
+            }
+        };
+    }
 }

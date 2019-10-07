@@ -12,6 +12,7 @@ import Nilai from './src/screens/Nilai';
 import Praktikum from './src/screens/Praktikum';
 import Login from './src/screens/Login';
 import DaftarNilai from './src/screens/DaftarNilai';
+import Timer from './src/screens/Timer';
 
 const AppStack = createStackNavigator({
     Home: {
@@ -32,6 +33,12 @@ const AppStack = createStackNavigator({
             header : null,
         }
     },
+    Timer : {
+        screen : Timer,
+        navigationOptions : {
+            header : null
+        }
+    }
     // QrCode : {
     //     screen : Scanner,
     //     navigationOptions : {
@@ -57,7 +64,8 @@ class CheckAuth extends React.Component{
 
     _storageSession = async () => {
         await AsyncStorage.getItem('isLogin').then((value) => {
-            this.props.navigation.navigate(value == 'login' ? 'App' : 'Auth')
+            this.props.screenProps.fromNotif ?  this.props.navigation.navigate('Timer') :
+            this.props.navigation.navigate(value == 'login' ? 'App' : 'Auth');
         })
         
     }
@@ -69,8 +77,12 @@ class CheckAuth extends React.Component{
 
 export default createAppContainer(
     createSwitchNavigator({
-        checkAuth : CheckAuth,
-        Auth : AuthStack,
+        checkAuth : {
+            screen : ({ navigation, screenProps }) => {
+                return < CheckAuth navigation={navigation} screenProps={screenProps} />
+            }            
+        },
+        Auth :  AuthStack,
         App : AppStack
     },
     {
