@@ -30,7 +30,7 @@ public class AsistensService extends Service {
 
     private static final int SERVICE_NOTIFICATION_ID = 12345;
     private static final String CHANNEL_ID = "Asistens";
-    
+    ConterSession conterSession;
     private String EVENT_DATE_TIME = "2019-12-31 02:44:00";
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     
@@ -133,6 +133,8 @@ public class AsistensService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        conterSession = new ConterSession(this);
+        conterSession.setSession();
         mSocket.connect();
         mSocket.on("new_regist_client", new Emitter.Listener(){
             @Override
@@ -141,21 +143,6 @@ public class AsistensService extends Service {
                 handler.post(runnableCode);
             }
         });
-        // 
-        // createNotificationChannel();
-        // Intent notificationIntent = new Intent(this, MainActivity.class);
-        // PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        // Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-        //         .setContentTitle("Heartbeat service")
-        //         .setContentText("Running...")
-        //         .setSmallIcon(R.mipmap.ic_launcher)
-        //         // .setContentIntent(contentIntent)
-        //         .setPriority(1)
-        //         .build();
-        // // NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        // // notificationManager.notify(0,notification);
-        // startForeground(SERVICE_NOTIFICATION_ID, notification);
-        //cuma muncul d status bar
         return START_STICKY;
     }
 

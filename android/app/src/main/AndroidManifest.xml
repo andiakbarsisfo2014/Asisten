@@ -32,10 +32,22 @@
             android:exported="false" >
         </service>
         <service
+            android:name="com.asistens.ConterService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <service
             android:name="com.asistens.AsistensEventService">
         </service>
         <receiver
             android:name="com.asistens.BootUpReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.asistens.CounterReciver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

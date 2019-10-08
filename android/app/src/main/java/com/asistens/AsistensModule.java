@@ -12,11 +12,14 @@ import android.app.NotificationManager;
 import androidx.core.app.NotificationCompat;
 import android.app.PendingIntent;
 import android.app.NotificationChannel;
-
 import javax.annotation.Nonnull;
+import  android.util.Log;
+import  android.app.ActivityManager;
+import      android.app.ActivityManager.RunningServiceInfo;
+
 
 public class AsistensModule extends ReactContextBaseJavaModule {
-
+    ConterSession conterSession;
     public static final String REACT_CLASS = "AsistensService";
     private static ReactApplicationContext reactContext;
     NotificationManager notificationManager;
@@ -43,14 +46,16 @@ public class AsistensModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void startCounter() {
+        conterSession = new ConterSession(this.reactContext); 
+           if (!isMyServiceRunning(ConterService.class)) {
+               this.reactContext.startService(new Intent(this.reactContext, ConterService.class)); 
+           }
+
+    }
+
+    @ReactMethod
     public void showNotif () {
-        // NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.reactContext);
-        // mBuilder.setSmallIcon(R.mipmap.ic_launcher);
-        // mBuilder.setContentTitle("My notification");
-        // mBuilder.setContentText("Hello World!");
-        // mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        // NotificationManager mNotificationManager = (NotificationManager) this.reactContext.getSystemService(this.reactContext.NOTIFICATION_SERVICE);
-        // mNotificationManager.notify(001, mBuilder.build());
         Intent notificationIntent = new Intent(this.reactContext, NotificationActifity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this.reactContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notification = new NotificationCompat.Builder(this.reactContext, "Tagal")
@@ -64,14 +69,14 @@ public class AsistensModule extends ReactContextBaseJavaModule {
         notificationManager.notify(0,notification);
     }
 
-    // @ReactMethod 
-    // public boolean isMyServiceRunning(Class<?> serviceClass) {
-    //     ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-    //     for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-    //         if (serviceClass.getName().equals(service.service.getClassName())) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
+    @ReactMethod 
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) this.reactContext.getSystemService(this.reactContext.ACTIVITY_SERVICE);
+        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

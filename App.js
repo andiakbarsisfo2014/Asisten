@@ -1,10 +1,10 @@
 import React from 'react';
-import { AsyncStorage , ActivityIndicator } from 'react-native';
+import { AsyncStorage , ActivityIndicator, View, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import { Icon } from 'react-native-elements';
-
+import { Provider, connect } from 'react-redux';
 
 import Absen from './src/screens/Absen';
 import Nilai from './src/screens/Nilai';
@@ -13,7 +13,7 @@ import Praktikum from './src/screens/Praktikum';
 import Login from './src/screens/Login';
 import DaftarNilai from './src/screens/DaftarNilai';
 import Timer from './src/screens/Timer';
-
+let Counter = connect(state => ({count : state.count}))(Timer);
 const AppStack = createStackNavigator({
     Home: {
         screen: Absen,
@@ -34,7 +34,10 @@ const AppStack = createStackNavigator({
         }
     },
     Timer : {
-        screen : Timer,
+        screen : ({navigation, screenProps}) => {
+            // console.log(navigation)
+            return <Counter />
+        },
         navigationOptions : {
             header : null
         }
@@ -79,13 +82,16 @@ export default createAppContainer(
     createSwitchNavigator({
         checkAuth : {
             screen : ({ navigation, screenProps }) => {
-                return < CheckAuth navigation={navigation} screenProps={screenProps} />
-            }            
+                return <CheckAuth navigation={navigation} screenProps={screenProps} />
+            }
         },
-        Auth :  AuthStack,
-        App : AppStack
+        Auth : AuthStack,
+        App : {
+            screen : AppStack
+        }
     },
     {
         initialRouteName: 'checkAuth',
     }
 ));
+

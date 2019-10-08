@@ -1,22 +1,31 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {View, Text, StyleSheet} from 'react-native';
+import AsistensService from '../../AsistensService';
 
-const Timer = ({detik}) => {
-	console.log(detik);
-	return(
-		<View style={{flex : 1, justifyContent : 'center' , alignItems : 'center' ,flexDirection : 'row'}}>
-			<View style={css.box}>
-				<Text style={css.label}>05</Text>
+AsistensService.startCounter()
+
+class Timer extends React.Component {
+
+	componentDidMount() {
+		console.log(this.props.count);
+	}
+
+	render(){
+		return(
+			<View style={{flex : 1, justifyContent : 'center' , alignItems : 'center' ,flexDirection : 'row'}}>
+				<View style={css.box}>
+					<Text style={css.label}>{this.props.count.Minutes}</Text>
+				</View>
+				<View style={css.box}>
+					<Text style={css.label}>:</Text>
+				</View>
+				<View style={css.box}>
+					<Text style={css.label}>{this.props.count.Seconds}</Text>
+				</View>
 			</View>
-			<View style={css.box}>
-				<Text style={css.label}>:</Text>
-			</View>
-			<View style={css.box}>
-				<Text style={css.label}>59</Text>
-			</View>
-		</View>
-	)
+		)
+	}
 }
 
 const css = StyleSheet.create({
@@ -30,8 +39,8 @@ const css = StyleSheet.create({
 	}
 });
 
-const mapStateToProps = store => ({
-	heartBeat: store.App.detik,
-  });
+// const mapStateToProps = store => ({
+// 	heartBeat: store.App.detik,
+//   });
 
-  export default connect(mapStateToProps)(Timer);
+  export default Timer;

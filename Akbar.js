@@ -4,16 +4,22 @@ import {
   StyleSheet, Text, View, TouchableOpacity, Image,
 } from 'react-native';
 import { connect } from 'react-redux';
+import AsistensService from './AsistensService';
 
-const Akbar = ({detik}) => {
-    console.log(detik);
+class Akbar extends React.Component {
+  render(){
     return(
-        <Text>Akbar</Text>
+      <Text>{this.props.value}</Text>
     )
+  }
+
+  componentDidMount () {
+    AsistensService.startCounter();
+  }
 }
 
-const mapStateToProps = store => ({
-    detik: store.App.detik,
-  });
+// const mapStateToProps = store => ({
+//     detik: store.App.detik,
+//   });
   
-  export default connect(mapStateToProps)(Akbar);
+  export default Akbar;

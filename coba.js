@@ -82,9 +82,7 @@ class StaticCounter extends React.Component {
 
 // Connect the screens to Redux
 let CounterContainer = connect(state => ({ count: state.count }))(Counter);
-let StaticCounterContainer = connect(state => ({ count: state.count }))(
-  StaticCounter
-);
+let StaticCounterContainer = connect(state => ({ count: state.count }))( StaticCounter );
 
 // Create our stack navigator
 let RootStack = createStackNavigator({
