@@ -183,13 +183,6 @@ export default class Praktikum extends React.Component {
         else{
             return(
                 <View style={{flex : 1, flexDirection : 'column'}}>
-                    {/*<Header
-                        leftComponent={{icon : 'buysellads', type: 'font-awesome', color : '#fff'}}
-                        centerComponent={{ text: 'Asisten App', style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
-                        rightComponent={this.rightComponent()}
-                    />*/}
-                    <HeaderNilai attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
-                    <View style={{width : '100%', height : 20, alignItems : 'center'}}><Text>Daftar Praktikum</Text></View>
                     { this.state.loadingList ? <ActivityIndicator /> : this.state.showError ? this.error() : <FlatList 
                         data ={this.state.matkul}
                         refreshControl = {

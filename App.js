@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncStorage , ActivityIndicator, View, Text } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import { Icon } from 'react-native-elements';
 import { Provider, connect } from 'react-redux';
@@ -16,7 +17,10 @@ import Timer from './src/screens/Timer';
 import Laporan from './src/screens/Laporan';
 import Mid from './src/screens/Mid';
 import Final from './src/screens/Nilai_final';
+import Setting from './src/screens/Setting';
 let Counter = connect(state => ({count : state.count}))(Timer);
+
+
 const AppStack = createStackNavigator({
     Home: {
         screen: Absen,
@@ -35,6 +39,9 @@ const AppStack = createStackNavigator({
     },
     Praktikum : {
         screen : Praktikum,
+    },
+    Setting : {
+        screen : Setting,
     },
     Timer : {
         screen : ({navigation, screenProps}) => {
@@ -80,8 +87,8 @@ class CheckAuth extends React.Component{
     }
 } 
 
-const AppsContainer =  createAppContainer(
-    createSwitchNavigator({
+const Switch =  createSwitchNavigator(
+    {
         checkAuth : {
             screen : ({ navigation, screenProps }) => {
                 return <CheckAuth navigation={navigation} screenProps={screenProps} />
@@ -95,17 +102,30 @@ const AppsContainer =  createAppContainer(
     {
         initialRouteName: 'checkAuth',
     }
-));
+);
 
-export default class App extends React.Component {
-    constructor (props){
-        super(props);
-        this.theme = useColorScheme();
-    }
-    render (){
-        return (
-            <AppsContainer theme={this.theme} screenProps={this.props.screenProps} />
-        )
-    }
-}
+const AppsContainer =  createAppContainer(
+    createBottomTabNavigator(
+        {
+            Home : {screen : Switch},
+            Settings : {screen  : Setting}
+        }, 
+        {
+            defaultNavigationOptions : ({navigation}) => ({
+                tabBarIcon : ({ focused, tintColor }) => {
+                    const { routeName } = navigation.state;
+                    let iconName;
+                    if (routeName === 'Home') {
+                        iconName = focused ?  'home' : 'home';
+                    } else if (routeName === 'Settings') {
+                        iconName = focused ? 'cogs' : 'cogs';
+                    }
+                    return <Icon name={iconName} type='font-awesome' size={25} color={tintColor} />;
+                }
+            })
+        }
+    )
+);
+
+export default AppsContainer;
 
