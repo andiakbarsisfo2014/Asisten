@@ -5,7 +5,18 @@ import { ListItem, Button,Input, Icon, Header } from 'react-native-elements'
 import HeaderNilai from './component/HeaderNilai';
 
 class Laporan extends React.Component {
-
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.state.params.atribute.nim,
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        };
+    };
     constructor (props){
         super(props);
         this.editNilai = this.editNilai.bind(this);
@@ -18,7 +29,6 @@ class Laporan extends React.Component {
             errorMsg : '',
             showError : false,
         }
-        this.back = this.back.bind(this);
     }
 
     editNilai (param) {
@@ -26,6 +36,7 @@ class Laporan extends React.Component {
     }
 
     componentDidMount(){
+        console.log(this.props.navigation.state);
         var a = this;
         setTimeout(function(){
             a.setState({
@@ -61,9 +72,9 @@ class Laporan extends React.Component {
         }, 700)
     }
 
-    back(){
-        this.props.history.navigation.navigate('Home');
-    }
+    // back(){
+    //     this.props.history.navigation.navigate('Home');
+    // }
 
     showModal = () => {
         this.setState({modalVisible : true});
@@ -72,16 +83,11 @@ class Laporan extends React.Component {
     render(){
         return(
             <View style={{flex : 1, flexDirection : 'column'}}>
-                <Header
-                    leftComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.back()}><Icon name={'arrow-left'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                    centerComponent={{ text: this.props.attribute.nim, style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
-                    rightComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.showModal()}><Icon name={'plus-square'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                />
                 {this.state.isLoading ? <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
                     <ActivityIndicator size={35} color="grey" />
                 </View> : <FlatList 
                     data = {this.state.data}
-                    ListHeaderComponent = {<HeaderNilai attribute={this.props.attribute} />}
+                    ListHeaderComponent = {<HeaderNilai attribute={this.props.navigation.state.params.atribute} />}
                     showsVerticalScrollIndicator = {false}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem = {({item}) => (

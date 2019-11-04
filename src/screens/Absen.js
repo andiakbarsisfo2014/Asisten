@@ -9,6 +9,18 @@ const {width} = Dimensions.get('window');
 
 
 export default class Absen extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+        title: navigation.state.params.title,
+        headerStyle: {
+            backgroundColor: '#004dcf',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+            fontWeight: 'bold',
+        }
+    };
+  };
   constructor(props){
     super(props);
     this.state = {
@@ -162,11 +174,11 @@ export default class Absen extends Component {
     if (this.state.isLoading) {
       return(
         <View style={{flex : 1, flexDirection : 'column'}}>
-          <Header
+          {/* <Header
               leftComponent={{icon : 'arrow-left', type:'font-awesome', color : '#fff', onPress : () => (this.props.navigation.navigate('Praktikum'))}}
               centerComponent={{ text: this.props.navigation.state.params.title, style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
               rightComponent={{ icon: 'search', color: '#fff' }}
-            /> 
+            />  */}
           <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
             <ActivityIndicator size={35} color="grey" />
           </View>
@@ -176,11 +188,11 @@ export default class Absen extends Component {
     else{
       return (
         <View style={{ flex : 1, flexDirection : 'column'}}>
-            <Header
+            {/* <Header
               leftComponent={{icon : 'arrow-left', type:'font-awesome', color : '#fff', onPress : () => (this.props.navigation.navigate('Praktikum'))}}
               centerComponent={{ text: this.props.navigation.state.params.title, style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
               rightComponent={{ icon: 'search', color: '#fff' }}
-            />
+            /> */}
             {
                 this.state.wrong ? this.error() : 
                 <FlatList
@@ -308,7 +320,15 @@ class Item extends React.Component {
 
   hideMenu = (param) => {
     this._menu.hide();
-    this.props.nilai.navigation.navigate('Nilai', {passParam : param.atribute, status : param.status, kode_kelas : this.props.kode_kelas})
+    if (param.status == 1) {
+      this.props.nilai.navigation.navigate('Laporan', {atribute : param.atribute, status : param.status, kode_kelas : this.props.kode_kelas});
+    }
+    else if (param.status == 2) {
+      this.props.nilai.navigation.navigate('Mid', {atribute : param.atribute, status : param.status, kode_kelas : this.props.kode_kelas});      
+    } else if (param.status == 3) {
+      this.props.nilai.navigation.navigate('Final', {atribute : param.atribute, status : param.status, kode_kelas : this.props.kode_kelas});      
+    }
+    // this.props.nilai.navigation.navigate('Nilai', {passParam : param.atribute, status : param.status, kode_kelas : this.props.kode_kelas})
   }
 
   // showProfile = (param) => {

@@ -23,7 +23,6 @@ let store = createStore(combineReducers({ count: counter }));
 let CountContainer = connect(state => ({ count: state.count }))(App);
 
 const AsistenHeadless = async (data) => {
-  console.log(data);
   store.dispatch({type : 'kirim', value : data});
 };
 

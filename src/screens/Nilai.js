@@ -10,63 +10,19 @@ import Laporan from './Laporan';
 import Mid from './Mid';
 import Nilai_final from './Nilai_final';
 const {width} = Dimensions.get('window');
-
-// const TabNavigator = createBottomTabNavigator(
-//     {
-//         Laporan: { screen: Laporan },
-//         Mid: { screen: Mid },
-//         Final : {
-//             screen : Nilai_final
-//         }    
-//     },
-//     {
-//         defaultNavigationOptions : ({ navigation }) => ({
-//             tabBarIcon : ({ focused, horizontal, tintColor }) => {
-//                 const { routeName } = navigation.state;
-//                 if (routeName == 'Laporan') {
-//                     return(<Icon
-//                         raised
-//                         name='sticky-note'
-//                         type='font-awesome'
-//                         size={19}
-//                         color={tintColor}
-//                     />)
-//                 }
-//                 else if (routeName == 'Mid'){
-//                     return(<Icon
-//                         raised
-//                         name='paste'
-//                         type='font-awesome'
-//                         size={19}
-//                         color={tintColor}
-//                     />)
-//                 }
-//                 else{
-//                     return(<Icon
-//                         raised
-//                         name='paperclip'
-//                         type='font-awesome'
-//                         size={19}
-//                         color={tintColor}
-//                     />)
-//                 }
-                
-//             }
-//         }),
-//         tabBarOptions : {
-//             labelStyle : {
-//                 fontWeight : 'bold',
-//                 fontSize : 15
-//             }
-//         }
-        
-//     }
-// );
-
-// const Container = createAppContainer(TabNavigator);
-
 export default class App extends React.Component {
-
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.state.params.passParam.nim,
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        };
+    };
     constructor (props){
         super(props);
         this.act_new = this.act_new.bind(this);
@@ -81,6 +37,9 @@ export default class App extends React.Component {
 
     act_new (param) {
         this.setState({active : param});
+    }
+
+    componentDidMount (){
     }
 
     laporanBaru (){

@@ -4,14 +4,23 @@ import {Icon, Header, ListItem} from 'react-native-elements';
 import HeaderNilai from './component/HeaderNilai';
 
 class NilaiFinal extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.state.params.atribute.nim,
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        };
+    };
     constructor(props){
         super(props)
         this.state = {
             isLoading : true,
         }
-    }
-    back = () => {
-        this.props.history.navigation.navigate('Home');
     }
     componentDidMount (){
         var that = this;
@@ -23,17 +32,12 @@ class NilaiFinal extends React.Component {
     render(){
         return(
             <View style={{flex : 1,  flexDirection : 'column'}}>
-                <Header
-                    leftComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.back()}><Icon name={'arrow-left'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                    centerComponent={{ text: this.props.attribute.nim, style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
-                    rightComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.showModal()}><Icon name={'plus-square'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                />
                 {this.state.isLoading ? 
                     <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
                         <ActivityIndicator size={35} color="grey" />
                     </View> : 
                     <View>
-                        <HeaderNilai attribute={this.props.attribute}/>
+                        <HeaderNilai attribute={this.props.navigation.state.params.atribute} />
                         <ListItem
                             // onPress = {() => this.editNilai(item.urutan)}
                             subtitle = {'useless'}

@@ -6,6 +6,18 @@ import ConfigAPI from './config/ConfigAPI';
 const {width} = Dimensions.get('window');
 
 class Mid extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.state.params.atribute.nim,
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            }
+        };
+    };
     constructor(props){
         super(props)
         this.state = {
@@ -48,8 +60,8 @@ class Mid extends React.Component {
                 'Authorization' : token,
             },
             body : JSON.stringify({
-                nim : this.props.attribute.nim,
-                kode_kelas : this.props.kode_kelas
+                nim : this.props.navigation.state.params.atribute.nim,
+                kode_kelas : this.props.navigation.state.params.atribute.kode_kelas
             })
         })
         var response = await result.json();
@@ -164,12 +176,7 @@ class Mid extends React.Component {
     render(){
         return(
             <View style={{flex : 1,  flexDirection : 'column'}}>
-                <Header
-                    leftComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.back()}><Icon name={'arrow-left'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                    centerComponent={{ text: this.props.attribute.nim, style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
-                    rightComponent={<TouchableHighlight underlayColor="grey" onPress={() => this.showModal()}><Icon name={'plus-square'}  type='font-awesome' color='#fff' /></TouchableHighlight>}
-                />
-                <HeaderNilai attribute={this.props.attribute}/>
+                <HeaderNilai attribute={this.props.navigation.state.params.atribute} />
                 {this.state.loadingResult ? <ActivityIndicator /> : this.state.showError ? this.error() : 
                     <ScrollView 
                         refreshControl={

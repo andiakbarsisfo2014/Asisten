@@ -1,10 +1,33 @@
 import React from 'react';
-import {View, Text, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList} from 'react-native';
+import {View, Text, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList, StyleSheet} from 'react-native';
 import {Header, Icon, ListItem, Button} from 'react-native-elements';
 import HeaderNilai from './component/HeaderNilai';
 import ConfigAPI from './config/ConfigAPI';
+// import { ThemeColors, useTheme } from 'react-navigation';
 
 export default class Praktikum extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Asisten',
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            headerRight : (
+                <View style={{ flex : 1, alignItems : 'center', flexDirection : 'row', justifyContent : 'space-between'}}>
+                    <TouchableHighlight style={css.rightComponent} onPress={() => navigation.getParam('logot')()}>
+                        <Icon name="qrcode" type="font-awesome" color="#fff" />
+                    </TouchableHighlight>
+                    <View style={css.rightComponent}>
+                        <Icon name="sign-out" type="font-awesome" color="#fff" onPress={() => navigation.getParam('logot')()} />
+                    </View>
+                </View>
+            )
+        };
+    };
     constructor(props){
         super(props);
         this.state = {
@@ -21,6 +44,10 @@ export default class Praktikum extends React.Component {
         }
     }
     componentDidMount(){
+        const { navigation } = this.props;
+        navigation.setParams({
+            logot: this.logot,
+        })
         this.showProfile();
     }
 
@@ -142,11 +169,11 @@ export default class Praktikum extends React.Component {
         if (this.state.isLoading) {
             return(
                 <View style={{flex : 1, flexDirection : 'column'}}>
-                    <Header
+                    {/*<Header
                         leftComponent={{icon : 'buysellads', type: 'font-awesome', color : '#fff'}}
                         centerComponent={{ text: 'Asisten App', style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
                         rightComponent={this.rightComponent()}
-                    /> 
+                    /> */}
                     <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
                         <ActivityIndicator size={35} color="grey" />
                     </View>
@@ -156,11 +183,11 @@ export default class Praktikum extends React.Component {
         else{
             return(
                 <View style={{flex : 1, flexDirection : 'column'}}>
-                    <Header
+                    {/*<Header
                         leftComponent={{icon : 'buysellads', type: 'font-awesome', color : '#fff'}}
                         centerComponent={{ text: 'Asisten App', style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
                         rightComponent={this.rightComponent()}
-                    />
+                    />*/}
                     <HeaderNilai attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
                     <View style={{width : '100%', height : 20, alignItems : 'center'}}><Text>Daftar Praktikum</Text></View>
                     { this.state.loadingList ? <ActivityIndicator /> : this.state.showError ? this.error() : <FlatList 
@@ -184,3 +211,10 @@ export default class Praktikum extends React.Component {
         }
     }
 }
+
+const css = StyleSheet.create ({
+    rightComponent : {
+        flex : 1, backgroundColor : '#14489e', borderRadius : 60, marginRight : 10, width : 35, 
+        height : 35, justifyContent : 'center' 
+    }
+})

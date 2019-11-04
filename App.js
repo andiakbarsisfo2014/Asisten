@@ -5,37 +5,39 @@ import {createStackNavigator} from 'react-navigation-stack';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import { Icon } from 'react-native-elements';
 import { Provider, connect } from 'react-redux';
+import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 
 import Absen from './src/screens/Absen';
 import Nilai from './src/screens/Nilai';
-// import Scanner from './src/screens/Scanner';
 import Praktikum from './src/screens/Praktikum';
 import Login from './src/screens/Login';
 import DaftarNilai from './src/screens/DaftarNilai';
 import Timer from './src/screens/Timer';
+import Laporan from './src/screens/Laporan';
+import Mid from './src/screens/Mid';
+import Final from './src/screens/Nilai_final';
 let Counter = connect(state => ({count : state.count}))(Timer);
 const AppStack = createStackNavigator({
     Home: {
         screen: Absen,
-        navigationOptions : {
-            header : null,
-        }
     },
     Nilai : {
         screen : Nilai,
-        navigationOptions : {
-            header : null,
-        }
+    },
+    Laporan : {
+        screen : Laporan,
+    },
+    Mid : {
+        screen : Mid,
+    },
+    Final : {
+        screen : Final,
     },
     Praktikum : {
         screen : Praktikum,
-        navigationOptions : {
-            header : null,
-        }
     },
     Timer : {
         screen : ({navigation, screenProps}) => {
-            // console.log(navigation)
             return <Counter />
         },
         navigationOptions : {
@@ -78,7 +80,7 @@ class CheckAuth extends React.Component{
     }
 } 
 
-export default createAppContainer(
+const AppsContainer =  createAppContainer(
     createSwitchNavigator({
         checkAuth : {
             screen : ({ navigation, screenProps }) => {
@@ -94,4 +96,16 @@ export default createAppContainer(
         initialRouteName: 'checkAuth',
     }
 ));
+
+export default class App extends React.Component {
+    constructor (props){
+        super(props);
+        this.theme = useColorScheme();
+    }
+    render (){
+        return (
+            <AppsContainer theme={this.theme} screenProps={this.props.screenProps} />
+        )
+    }
+}
 
