@@ -7,7 +7,7 @@ import ConfigAPI from './config/ConfigAPI';
 export default class Setting extends React.Component {
 	static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Settings',
+            title: 'Asisten',
             headerStyle: {
                 backgroundColor: '#004dcf',
             },
@@ -15,9 +15,19 @@ export default class Setting extends React.Component {
             headerTitleStyle: {
                 fontWeight: 'bold',
             },
+            headerRight : (
+                <View style={{ flex : 1, alignItems : 'center', flexDirection : 'row', justifyContent : 'space-between'}}>
+                    <TouchableHighlight style={css.rightComponent} onPress={() => navigation.getParam('logot')()}>
+                        <Icon name="qrcode" type="font-awesome" color="#fff" />
+                    </TouchableHighlight>
+                    <View style={css.rightComponent}>
+                        <Icon name="sign-out" type="font-awesome" color="#fff" onPress={() => navigation.getParam('logot')()} />
+                    </View>
+                </View>
+            )
         };
     };
-	constructor(props){
+    constructor(props){
         super(props);
         this.state = {
             isLoading : true,
@@ -33,7 +43,16 @@ export default class Setting extends React.Component {
     }
     
     componentDidMount(){
+        const { navigation } = this.props;
+        navigation.setParams({
+            logot: this.logot,
+        })
         this.showProfile();
+    }
+
+    logot = async () => {
+       await AsyncStorage.clear();
+       this.props.navigation.navigate('Auth');
     }
 
     showProfile = async () => {
@@ -54,5 +73,11 @@ export default class Setting extends React.Component {
     		<HeaderNilai attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
     	)
     }
-}                   
+}    
+const css = StyleSheet.create ({
+    rightComponent : {
+        flex : 1, backgroundColor : '#14489e', borderRadius : 60, marginRight : 10, width : 35, 
+        height : 35, justifyContent : 'center' 
+    }
+})               
                     

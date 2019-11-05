@@ -5,7 +5,7 @@ import HeaderNilai from './component/HeaderNilai';
 import ConfigAPI from './config/ConfigAPI';
 // import { ThemeColors, useTheme } from 'react-navigation';
 
-export default class Praktikum extends React.Component {
+class Main extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Asisten',
@@ -211,3 +211,5 @@ const css = StyleSheet.create ({
         height : 35, justifyContent : 'center' 
     }
 })
+
+export default Main

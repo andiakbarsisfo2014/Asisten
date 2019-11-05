@@ -20,6 +20,12 @@ import Final from './src/screens/Nilai_final';
 import Setting from './src/screens/Setting';
 let Counter = connect(state => ({count : state.count}))(Timer);
 
+const BootMenu = createStackNavigator({
+    Setting : {screen : Setting},
+    Useless : {
+        screen : Praktikum,
+    },
+}, {initialRouteName : 'Setting'})
 
 const AppStack = createStackNavigator({
     Home: {
@@ -37,7 +43,7 @@ const AppStack = createStackNavigator({
     Final : {
         screen : Final,
     },
-    Praktikum : {
+    Prak : {
         screen : Praktikum,
     },
     Setting : {
@@ -57,7 +63,30 @@ const AppStack = createStackNavigator({
     //         header : null,
     //     }
     // }
-}, {initialRouteName : 'Praktikum'});
+}, {initialRouteName : 'Prak'});
+
+const Tab = createBottomTabNavigator(
+    {
+        Home : {screen : AppStack},
+        Setting : {
+            screen  : BootMenu,
+        }
+    }, 
+    {
+        defaultNavigationOptions : ({navigation}) => ({
+            tabBarIcon : ({ focused, tintColor }) => {
+                const { routeName } = navigation.state;
+                let iconName;
+                if (routeName === 'Home') {
+                    iconName = focused ?  'home' : 'home';
+                } else if (routeName === 'Setting') {
+                    iconName = focused ? 'cogs' : 'cogs';
+                }
+                return <Icon name={iconName} type='font-awesome' size={25} color={tintColor} />;
+            }
+        }),
+    }
+)
 
 const AuthStack = createStackNavigator ({
     Login : {
@@ -96,7 +125,7 @@ const Switch =  createSwitchNavigator(
         },
         Auth : AuthStack,
         App : {
-            screen : AppStack
+            screen : Tab
         }
     },
     {
@@ -104,28 +133,7 @@ const Switch =  createSwitchNavigator(
     }
 );
 
-const AppsContainer =  createAppContainer(
-    createBottomTabNavigator(
-        {
-            Home : {screen : Switch},
-            Settings : {screen  : Setting}
-        }, 
-        {
-            defaultNavigationOptions : ({navigation}) => ({
-                tabBarIcon : ({ focused, tintColor }) => {
-                    const { routeName } = navigation.state;
-                    let iconName;
-                    if (routeName === 'Home') {
-                        iconName = focused ?  'home' : 'home';
-                    } else if (routeName === 'Settings') {
-                        iconName = focused ? 'cogs' : 'cogs';
-                    }
-                    return <Icon name={iconName} type='font-awesome' size={25} color={tintColor} />;
-                }
-            })
-        }
-    )
-);
+const AppsContainer =  createAppContainer(Switch);
 
 export default AppsContainer;
 
