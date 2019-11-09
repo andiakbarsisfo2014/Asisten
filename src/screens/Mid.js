@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, Text, ToastAndroid, TouchableHighlight, Modal, ScrollView, RefreshControl, ActivityIndicator, AsyncStorage, Dimensions} from 'react-native';
-import {Icon, Header, ListItem, Input, Button} from 'react-native-elements';
+import {View, Text, StyleSheet, ToastAndroid, TouchableHighlight, Modal, ScrollView, RefreshControl, ActivityIndicator, AsyncStorage, Dimensions} from 'react-native';
+import {Icon, Header, ListItem, Input, Button, Overlay} from 'react-native-elements';
 import HeaderNilai from './component/HeaderNilai';
 import ConfigAPI from './config/ConfigAPI';
 const {width} = Dimensions.get('window');
@@ -15,7 +15,12 @@ class Mid extends React.Component {
             headerTintColor: '#fff',
             headerTitleStyle: {
                 fontWeight: 'bold',
-            }
+            },
+            headerRight: () => (
+                <View style={{ flex : 1, alignItems : 'center', flexDirection : 'row', justifyContent : 'space-between'}}>
+                    <TouchableHighlight style={css.rightComponent} underlayColor="grey" onPress={() => navigation.getParam('actBtn')()}><Icon name={'plus-square'}  type='font-awesome' color='#fff' /></TouchableHighlight>
+                </View>
+            )
         };
     };
     constructor(props){
@@ -41,6 +46,10 @@ class Mid extends React.Component {
         this.props.history.navigation.navigate('Home');
     }
     componentDidMount (){
+        const { navigation } = this.props;
+        navigation.setParams({
+            actBtn: this.showModal,
+        })
         this.prepare()
     }
     prepare = async() => {
@@ -245,5 +254,12 @@ class Mid extends React.Component {
         )
     }
 }
+
+const css = StyleSheet.create ({
+    rightComponent : {
+        flex : 1, backgroundColor : '#14489e', borderRadius : 60, marginRight : 10, width : 35, 
+        height : 35, justifyContent : 'center' 
+    }
+})
 
 export default Mid;
