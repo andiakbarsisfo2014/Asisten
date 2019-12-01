@@ -1,23 +1,20 @@
 
 import React, {Component} from 'react';
-import {ActivityIndicator, Image, RefreshControl, AsyncStorage, FlatList, ScrollView , StyleSheet, Text, Animated, View, PanResponder, Dimensions, TouchableHighlight} from 'react-native';
-import {Icon, Button} from 'react-native-elements';
+import {ActivityIndicator, Image, RefreshControl, AsyncStorage, FlatList, TextInput, StyleSheet, Text, View, Dimensions, TouchableHighlight} from 'react-native';
+import {Icon, Button, Input} from 'react-native-elements';
 import ConfigAPI from './config/ConfigAPI';
 import AsistensService from '../../AsistensService';
 const {width} = Dimensions.get('window');
 
 
-export default class Absen extends Component {
+export default class Pendahuluan extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-        title: navigation.state.params.title,
+        headerTitle : () => <Judul judul={navigation.state.params.judul+' '+navigation.state.params.title} />,
         headerStyle: {
             backgroundColor: '#004dcf',
         },
         headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontWeight: 'bold',
-        }
     };
   };
   constructor(props){
@@ -34,6 +31,7 @@ export default class Absen extends Component {
       users : [],
       pertemuan :  0,
       token : null,
+      uri : ''
     }
     this.onEndReachedCalledDuringMomentum = true;
   }
@@ -45,7 +43,7 @@ export default class Absen extends Component {
         }
     )
     this.getItem(0);
-}
+  }
 
   getItem = (prosesID) => {
       var token1;
@@ -58,29 +56,61 @@ export default class Absen extends Component {
   }
 
   getData = (token, prosesID) => {
-    var aa = fetch(ConfigAPI.link+'get-mhs',{
+    if (this.props.navigation.state.params.from == 'tugas') {
+      var from = 'tugas';
+      var uri = ConfigAPI.link + 'store-nilai-tugas';
+    } else if (this.props.navigation.state.params.from == 'tp') {
+      var from = 'mid';
+      var uri = ConfigAPI.link + 'store-nilai-mid';
+    }
+    else if (this.props.navigation.state.params.from == 'quis') {
+      var from = 'quis';
+      var uri = ConfigAPI.link + 'store-nilai-quis';
+    }
+    else if (this.props.navigation.state.params.from == 'respon') {
+      var from = 'final';
+      var uri = ConfigAPI.link + 'store-nilai-final';
+    }
+    else if (this.props.navigation.state.params.from == 'harian') {
+      var from = 'harian';
+      var uri = ConfigAPI.link + 'store-harian';
+    }
+
+    var dari = this.props.navigation.state.params.from;
+
+    if (dari == 'tugas' || dari == 'tp') {
+      var dataBody = JSON.stringify({
+        kode_kelas : this.props.navigation.state.params.key,
+        pertemuan : this.state.pertemuan,
+        nilai : from,
+      })
+    }
+    else{
+      var dataBody = JSON.stringify({
+        kode_kelas : this.props.navigation.state.params.key,
+        ke : this.state.pertemuan,
+        nilai : from,
+      })
+    }
+    fetch(ConfigAPI.link+'get-mhs',{
         method : 'POST',
         headers : {
             'Accept' : 'application/json',
             'Content-Type': 'application/json',
             'Authorization' : token,
         },
-        body : JSON.stringify({
-            kode_kelas : this.props.navigation.state.params.key,
-            pertemuan : this.state.pertemuan,
-            nilai : 'absen',
-        })
+        body : dataBody,
     }).then(response  => response.json())
-      .then(json => this.jsonParse(json, prosesID));
+      .then(json => this.jsonParse(json, prosesID, uri));
   }
 
-  jsonParse = (json, prosesID) => {
-    console.log(json);
+  jsonParse = (json, prosesID, uri) => {
       if (json.response.length > 0) {
         this.setState({
           isLoading : false,
           isRefresh : false,
           endOfRecord : false,
+          uri : uri,
           users : this.state.users.concat(json.response)
         });
       }
@@ -150,10 +180,9 @@ export default class Absen extends Component {
                       <RefreshControl colors={['#0E9DDD','#0B7EB1']} refreshing={this.state.isRefresh} onRefresh={this.refresh} />
                     }
                     showsVerticalScrollIndicator = {false}
-                    // ListFooterComponent={this.footerFlatlist}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem = { ({item}) => (
-                        <Item key={item.key} token={this.state.token} pertemuan={this.state.pertemuan} items={item} nilai={this.props} kode_kelas={this.props.navigation.state.params.key} />
+                        <Item key={item.key} uri = {this.state.uri} from={this.props.navigation.state.params.from} token={this.state.token} pertemuan={this.state.pertemuan} items={item} nilai={this.props} kode_kelas={this.props.navigation.state.params.key} />
                     )}
                 />
             }
@@ -195,71 +224,114 @@ class Item extends React.PureComponent {
     this.state = {
       isRequest : false,
       failed : false,
-      textStatus : this.props.items.status == undefined ? 'Kosong' : this.props.items.status == 1 ? 'Hadir' : this.props.items.status == 2 ? 'Alfa' : 'Otw',
+      isLoading : false,
+      textStatus : this.props.items.status == undefined ? String(0) : String(this.props.items.status),
     }
   }
+  dataBody = (params) => {
+    if (this.props.from != 'harian') {
+      var body = JSON.stringify({
+        mahasiswa : params,
+        ke : this.props.pertemuan,
+        nilai : this.state.textStatus
+      })
+      return body; 
+    } 
+    else{
+      var body = JSON.stringify({
+        kode_kelas : params,
+        ke : this.props.pertemuan,
+        nilai : this.state.textStatus
+      })
+      return body; 
+    }
+    
+    
+  }
   absen = (status, id_kelas) => {
-    this.setState({isRequest : true});
-    var aa = fetch(ConfigAPI.link+'save-absen',{
+    this.setState({isRequest : true, isLoading : true});
+    var aa = fetch(this.props.uri,{
       method : 'POST',
       headers : {
           'Accept' : 'application/json',
           'Content-Type': 'application/json',
           'Authorization' : this.props.token,
       },
-      body : JSON.stringify({
-          ke : this.props.pertemuan,
-          msh : id_kelas,
-          status : status,
-      })
+      body : this.dataBody(id_kelas),
     }).then(response  => response.json())
-      .then(json => this.success(json, status))
-      .catch(() => this.failed())
+      .then(json => this.success(json))
+      .catch((error) => this.failed(error))
   }
 
-  success = (json, status) => {
-    this.setState({isRequest : false, failed : false, textStatus : status == 1 ?  'Hadir' : status == 2 ? 'Alfa' : 'Otw' });
+  success = (json) => {
+    console.log(json);
+    this.setState({isRequest : false});
+    // this.setState({isRequest : false, failed : false, textStatus : status == 1 ?  'Hadir' : status == 2 ? 'Alfa' : 'Otw' });
   }
 
-  failed = () => {
-    this.setState({isRequest : true, failed : true});
+  failed = (data) => {
+    console.log(data);
+    this.setState({isRequest : false});
+  }
+
+  sendValue = (id_kelas) => {
+    if (this.state.textStatus >= 0 && this.state.textStatus <= 100) {
+      this.setState({isRequest : true});
+      var aa = fetch(this.props.uri,{
+        method : 'POST',
+        headers : {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization' : this.props.token,
+        },
+        body : this.dataBody(id_kelas),
+      }).then(response  => response.json())
+        .then(json => this.success(json))
+        .catch(() => this.failed())
+    }
+    else{
+      alert('Angka tidak sesuai');
+    }
   }
 
   render (){
+
     return(
       
       <View style={{backgroundColor : '#FFF', height : 160, marginVertical : 5, flex : 1, flexDirection : 'column',}}>
-        <View style={{flex : 1, flexDirection : 'row', paddingHorizontal : 10, paddingVertical : 10}}>
+        <View style={{flex : 1, flexDirection : 'row', paddingHorizontal : 10, paddingVertical : 10, borderBottomWidth : 0.5, borderBottomColor : '#D1D1D1'}}>
           <View style={{height : 50, width : 50, justifyContent : 'center', alignItems : 'center'}}>
-            <Image style={{width: 50, height: 50, borderRadius : 50,}} source={this.props.items.img != null ? { uri: global.uri +'/public'+this.props.items.img } : require('./component/logo.png') } />  
+            <Image style={{width: 50, height: 50, borderRadius : 50,}} source={this.props.items.img != null ? { uri: ConfigAPI.img_url+'/public'+this.props.items.img } : require('./component/logo.png') } />  
           </View>
           <View style={{height : 50, alignSelf : 'stretch', paddingHorizontal : 10,}}>
             <Text numberOfLines={2} style={{fontWeight : 'bold', fontSize : 16}}>{this.props.items.nama}</Text>
             <Text style={{color : '#BABABA'}}>{this.props.items.nim + ' - ' +this.props.items.kelas +' - '+ this.state.textStatus}</Text> 
           </View>
         </View>
-        <View style={{flex : 1, flexDirection : 'column', marginTop : 15}}>
-          <View style={styles.btnGruop}>
-              <TouchableHighlight disabled={this.props.items.allow_absen ? false : true} underlayColor="#E8E8E8" style={[styles.btnCss, {backgroundColor : this.props.items.allow_absen ? null : '#D1D1D1'} ]} onPress={() => this.absen(1, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="check-square" color="#5BAF5F"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Hadir</Text>
-                  </View>
-              </TouchableHighlight>
-            
-              <TouchableHighlight underlayColor="#E8E8E8" style={styles.btnCss} onPress={() => this.absen(2, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="ban" color="#BC3838"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Alfa</Text>
-                  </View>
-              </TouchableHighlight>
-              <TouchableHighlight underlayColor="#E8E8E8" style={styles.btnCss} onPress={() => this.absen(3, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="car" color="#004dcf"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Otw</Text>
-                  </View>
-              </TouchableHighlight>
-          </View>
+        <View style={{flex : 1, flexDirection : 'column', marginTop : 12,}}>
+            <View style={[styles.btnGruop,]}>
+                <View style={[styles.btnCss, {width : '15%',justifyContent : 'center'}]}>
+                  <Text>Nilai : </Text>
+                </View>
+                <View style={[styles.btnCss, {fontSize : 10, width : '53%'}]}>
+                    <Input returnKeyType='send' onSubmitEditing={() => this.sendValue(this.props.items.key)} onChange={(e) => this.setState({textStatus : e.nativeEvent.text})} value={this.state.textStatus} keyboardType='numeric' />
+                </View>
+                <View underlayColor="#E8E8E8" style={[styles.btnCss]} >
+                    <Button
+                      // disabled = {this.state.from == 'harian' ? this.state.textStatus != undefined ? false : true : false }
+                      onPress={() => this.absen(1, this.props.items.key)}
+                      icon={
+                        <Icon
+                          type="fontawesome"
+                          name="save"
+                          size={19}
+                          color="#004dcf"
+                        />
+                      }
+                      type="outline"
+                    />
+                </View>
+            </View>
         </View>
         {this.state.isRequest ? <View style={{flex : 1, justifyContent : 'center', alignItems : 'center', flexDirection : 'row', height: 160, width : '100%', position : 'absolute', left : 0, top : 0, backgroundColor : 'rgba(52, 52, 52, 0.2)'}}>
           {!this.state.failed ? <ActivityIndicator size="large" color="#FFF" /> : <Text>Coba</Text>}
@@ -275,7 +347,7 @@ const styles = StyleSheet.create({
     marginLeft: -100,
     justifyContent: 'center',
   },
-  btnGruop : {flex : 6, backgroundColor : '#fff', marginHorizontal : 15, flexDirection : 'row', borderTopWidth : 0.5, borderTopColor : '#D1D1D1'},
+  btnGruop : {flex : 6, backgroundColor : '#fff', marginHorizontal : 15, flexDirection : 'row'},
   btnContent : {flexDirection : 'row', flex : 1, alignItems : 'center', justifyContent : 'center'},
   iconBtn : {marginLeft : 10, color : '#545454', fontWeight : 'bold'},
   btnCss : {height : 35, width : '33%'},
@@ -313,6 +385,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start'
   }
 });
+
+class Judul extends React.PureComponent {
+  render() {
+    return (
+      <Text style={{fontWeight : 'bold', fontSize : 16, color : '#fff' }}> {this.props.judul} </Text>
+    )
+  }
+}
 
 
 

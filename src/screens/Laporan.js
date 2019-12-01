@@ -36,7 +36,6 @@ class Laporan extends React.Component {
     }
 
     componentDidMount(){
-        console.log(this.props.navigation.state);
         var a = this;
         setTimeout(function(){
             a.setState({

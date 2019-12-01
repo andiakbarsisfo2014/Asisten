@@ -18,6 +18,9 @@ import Laporan from './src/screens/Laporan';
 import Mid from './src/screens/Mid';
 import Final from './src/screens/Nilai_final';
 import Setting from './src/screens/Setting';
+import Pendahuluan from './src/screens/Pendahuluan';
+import Approver from './src/screens/Approved';
+import PdfRead from './src/screens/PdfRead';
 let Counter = connect(state => ({count : state.count}))(Timer);
 
 const BootMenu = createStackNavigator({
@@ -34,11 +37,20 @@ const AppStack = createStackNavigator({
     Nilai : {
         screen : Nilai,
     },
+    PdfRead : {
+        screen : PdfRead
+    },
     Laporan : {
         screen : Laporan,
     },
     Mid : {
         screen : Mid,
+    },
+    Pendahuluan : {
+        screen : Pendahuluan
+    },
+    Approver : {
+        screen : Approver
     },
     Final : {
         screen : Final,

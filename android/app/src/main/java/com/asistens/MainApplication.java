@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           // return packages;
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new RNCWebViewPackage(),
             new ReanimatedPackage(),
             new RNGestureHandlerPackage(),
                 new AsistensPackage()

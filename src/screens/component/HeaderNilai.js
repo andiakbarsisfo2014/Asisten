@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {Avatar} from 'react-native-elements';
+import ConfigAPI from '../config/ConfigAPI';
 export default class HeaderNilai extends React.Component {
     render () {
         return (
@@ -15,7 +16,7 @@ export default class HeaderNilai extends React.Component {
                 <Avatar
                   rounded
                   size="xlarge"
-                  source={this.props.attribute.avatar_url != undefined ? {uri : this.props.attribute.avatar_url} : require('./logo.png')}
+                  source={this.props.attribute.avatar_url != undefined ? {uri : ConfigAPI.img_url+'/public'+this.props.attribute.avatar_url} : require('./logo.png')}
                 />
                 <View style={{marginTop : 16}}>
                     <Text style={{fontSize : 18, fontWeight : 'bold'}}>{this.props.attribute.name.toUpperCase()}</Text>

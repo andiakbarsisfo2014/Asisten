@@ -2,7 +2,7 @@ package com.asistens;
 
 import android.content.Intent;
 
-
+import com.facebook.react.bridge.Callback;
 import android.app.Notification;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -13,9 +13,9 @@ import androidx.core.app.NotificationCompat;
 import android.app.PendingIntent;
 import android.app.NotificationChannel;
 import javax.annotation.Nonnull;
-import  android.util.Log;
-import  android.app.ActivityManager;
-import      android.app.ActivityManager.RunningServiceInfo;
+import android.util.Log;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 
 
 public class AsistensModule extends ReactContextBaseJavaModule {
@@ -23,6 +23,7 @@ public class AsistensModule extends ReactContextBaseJavaModule {
     public static final String REACT_CLASS = "AsistensService";
     private static ReactApplicationContext reactContext;
     NotificationManager notificationManager;
+    StorageReact storageReact;
 
     public AsistensModule(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
@@ -51,7 +52,18 @@ public class AsistensModule extends ReactContextBaseJavaModule {
            if (!isMyServiceRunning(ConterService.class)) {
                this.reactContext.startService(new Intent(this.reactContext, ConterService.class)); 
            }
+    }
 
+    @ReactMethod
+    public void getPertemuan(Callback booleanCallback) {
+        storageReact = new StorageReact(this.reactContext);
+        booleanCallback.invoke(storageReact.get_value("pertemuan"));
+    }
+
+    @ReactMethod
+    public void setPertemuan(String value) {
+        storageReact = new StorageReact(this.reactContext);
+        storageReact.set_value ("pertemuan", value);
     }
 
     @ReactMethod

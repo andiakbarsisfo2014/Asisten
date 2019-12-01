@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList, StyleSheet} from 'react-native';
+import {View, Text, Modal, InteractionManager, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList, StyleSheet} from 'react-native';
 import {Header, Icon, ListItem, Button} from 'react-native-elements';
 import HeaderNilai from './component/HeaderNilai';
 import ConfigAPI from './config/ConfigAPI';
@@ -40,15 +40,17 @@ class Main extends React.Component {
             nama : '',
             img : '',
             token : '',
-
+            modalVisible : false,
         }
     }
     componentDidMount(){
         const { navigation } = this.props;
-        navigation.setParams({
-            logot: this.logot,
+        InteractionManager.runAfterInteractions( () => {
+            navigation.setParams({
+                logot: this.logot,
+            })
+            this.showProfile();
         })
-        this.showProfile();
     }
 
     showProfile = async () => {
@@ -60,6 +62,9 @@ class Main extends React.Component {
                 nama : res.name,
                 img : res.img,
                 isLoading : false,
+                key : '',
+                title : '',
+                kelas : '',
             });
         });
         this.listPraktikum(token)        
@@ -115,11 +120,37 @@ class Main extends React.Component {
     }
 
     absen = (key, title, kelas) => {
-        this.props.navigation.navigate('Home',{key : key, title : title, kelas : kelas})
+        this.setState({modalVisible : true, key : key, title : title, kelas : kelas});
+        // this.props.navigation.navigate('Home',{key : key, title : title, kelas : kelas})
     }
 
     qrCode = () => {
         this.props.navigation.navigate('QrCode');
+    }
+
+    mulaiProses = (act) => {
+        this.setState({modalVisible : false});
+        if (act == 'absen') {
+            this.props.navigation.navigate('Home',{key : this.state.key, title : this.state.title, kelas : this.state.kelas})
+        }
+        else if (act == 'tp') {
+            this.props.navigation.navigate('Pendahuluan',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'tp', judul : '[ TP ]'})
+        }
+        else if (act == 'quis') {
+            this.props.navigation.navigate('Pendahuluan',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'quis', judul : '[ QUIS ]'})
+        }
+        else if (act == 'respon') {
+            this.props.navigation.navigate('Pendahuluan',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'respon', judul : '[ RES ]'})
+        }
+        else if (act == 'tugas') {
+            this.props.navigation.navigate('Pendahuluan',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'tugas', judul : '[ TUGAS ]'})
+        }
+        else if (act == 'harian') {
+            this.props.navigation.navigate('Pendahuluan',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'harian', judul : '[ Harian ]'})
+        }
+        else if(act == 'approver'){
+            this.props.navigation.navigate('Approver',{key : this.state.key, title : this.state.title, kelas : this.state.kelas, from : 'approver', judul : '[ Approved ]'})
+        }
     }
     
     logot = async () => {
@@ -199,6 +230,65 @@ class Main extends React.Component {
                             />
                         )}
                     /> }
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            this.setState({modalVisible : false})
+                        }}>
+                        <View style={{backgroundColor : 'rgba(52, 52, 52, 0.7)', justifyContent :'center', alignItems : 'center', flex : 1, flexDirection : 'row'}}>
+                            <View style={{backgroundColor : '#fff', height : 415, width : 300, borderRadius : 5}}>
+                                <View style={{flex : 1, flexDirection : 'column', padding : 15}}>
+                                    <View style={{height : 50, justifyContent : 'center', width : '100%',  borderBottomWidth : 0.5, borderBottomColor : '#464645'}}>
+                                        <Text style={{fontWeight : 'bold'}}>Pilih Input Nilai</Text>
+                                    </View>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('tp')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Nilai Pendahuluan</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('respon')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Nilai Respon</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('quis')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Nilai Quis</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('tugas')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Nilai Tugas</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('harian')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Nilai Harian</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('absen')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Absen</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => this.mulaiProses('approver')} underlayColor="#E8E8E8"  style={css.container}>
+                                        <View style={css.btn}>
+                                            <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
+                                            <Text style={css.label}>Approved Laporan</Text>
+                                        </View>
+                                    </TouchableHighlight>
+                                </View>
+                            </View>                            
+                        </View>
+                    </Modal>
                 </View>
             )
         }
@@ -209,7 +299,10 @@ const css = StyleSheet.create ({
     rightComponent : {
         flex : 1, backgroundColor : '#14489e', borderRadius : 60, marginRight : 10, width : 35, 
         height : 35, justifyContent : 'center' 
-    }
+    },
+    container : {marginTop : 15, flex : 1, flexDirection : 'column'},
+    btn : {flex : 1, flexDirection : 'row', alignItems : 'center'},
+    label : {fontWeight : 'bold', color : '#464646', fontSize : 15, marginLeft : 10}
 })
 
 export default Main
