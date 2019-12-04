@@ -94,7 +94,7 @@ export default class Setting extends React.Component {
     render () {
     	return(
             <View style={{flex : 1, flexDirection : 'column'}}>
-    		    <HeaderNilai attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
+    		    <HeaderNilai navigation={this.props.navigation} attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
                 <View style={{flex : 1, flexDirection : 'row', height : 50,}}>
                     <View style={{height : 50, flex : 1, flexDirection : 'row', backgroundColor : '#fff', justifyContent : 'space-around', borderBottomWidth : 1, borderBottomColor : '#E0E5EA'}}>
                         <View style={css.labelMenu}>

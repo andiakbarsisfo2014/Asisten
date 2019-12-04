@@ -16,7 +16,16 @@ import javax.annotation.Nonnull;
 import android.util.Log;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import java.io.File;
+import android.os.Environment;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
+import android.provider.MediaStore;
+import java.util.ArrayList;
+import android.database.Cursor;
+import android.util.Log;
 
 public class AsistensModule extends ReactContextBaseJavaModule {
     ConterSession conterSession;
@@ -58,6 +67,51 @@ public class AsistensModule extends ReactContextBaseJavaModule {
     public void getPertemuan(Callback booleanCallback) {
         storageReact = new StorageReact(this.reactContext);
         booleanCallback.invoke(storageReact.get_value("pertemuan"));
+    }
+
+    @ReactMethod
+    public void getListImage(Callback fileCallBack) {
+        // String path = Environment.getExternalStorageDirectory().toString()+"/Pictures";
+        // File directory = new File(path);
+        // File[] files = directory.listFiles();
+        
+        JSONObject allFile = new JSONObject();
+        JSONArray arrFileName = new JSONArray();
+        // try {
+        //     for (int i = 0; i < files.length; i++){
+        //         fileNames.put("fileName", files[i].getName());
+        //         arrFileName.put(fileNames);
+        //     }
+        //     allFile.put("files", arrFileName);
+        // } catch (JSONException e) {
+        //     e.printStackTrace();
+        // }
+        // fileCallBack.invoke(allFile.toString());
+
+        final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
+        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+        Cursor imagecursor = reactContext.getContentResolver().query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, 
+            columns, 
+            null,
+            null, 
+            orderBy + " DESC"
+        );
+        
+        try {
+            for (int i = 0; i < imagecursor.getCount(); i++) {
+                JSONObject fileNames = new JSONObject();
+                imagecursor.moveToPosition(i);
+                int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Images.Media.DATA);//get column index
+                fileNames.put("name", imagecursor.getString(dataColumnIndex));
+                arrFileName.put(fileNames);
+                Log.e("Useless-Dev", fileNames.toString());
+            }
+            allFile.put("files", arrFileName);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        fileCallBack.invoke(allFile.toString());
     }
 
     @ReactMethod

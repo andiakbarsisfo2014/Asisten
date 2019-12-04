@@ -31,10 +31,12 @@ export default class Approved extends React.Component {
         }
     }
 
+    
+
     componentDidMount () {
         InteractionManager.runAfterInteractions(() => {
             this.makeRequest();
-        })
+        });
     }
 
     makeRequest = () => {
@@ -72,8 +74,9 @@ export default class Approved extends React.Component {
         this.setState({
             isLoading : false,
             wrong : false,
-            users : json.response.data
-        })
+            // users : json.response.data
+        });
+        this.props.dispatch({type : 'initValue', data : json.response.data})
     }
 
     errorPage = () => {
@@ -130,14 +133,15 @@ export default class Approved extends React.Component {
                         this.state.wrong ? this.errorPage() : 
                         <FlatList
                             style={{backgroundColor : '#D1D1D1'}}
-                            data ={this.state.users}
+                            data ={this.props.dataLaporan}
                             refreshControl = {
                                 <RefreshControl colors={['#0E9DDD','#0B7EB1']} refreshing={this.state.isRefresh} onRefresh={this.refresh} />
                             }
+                            initialNumToRender={7}
                             showsVerticalScrollIndicator = {false}
                             keyExtractor={(item, index) => index.toString()}
-                            renderItem = { ({item}) => (
-                                <Item navigation={this.props.navigation} key={item.key} items={item} kode_kelas={this.props.navigation.state.params.key} />
+                            renderItem = { ({item, index}) => (
+                                <Item index={index} navigation={this.props.navigation} key={item.key} items={item} kode_kelas={this.props.navigation.state.params.key} />
                             )}
                         />
                     }
@@ -151,17 +155,20 @@ class Item extends React.PureComponent {
     constructor (props) {
         super(props);
         this.state = {
-            users : []
+            users : this.props.items.file != undefined ? this.props.items.file : [],
+            mhs : {
+                img : this.props.items.img,
+                kelas : this.props.items.kelas,
+                nama : this.props.items.nama,
+                nim : this.props.items.nim,
+
+            }
         }
     }
-    componentDidMount () {
-        this.setState({
-            users : this.props.items.file != undefined ? this.props.items.file : [],
-        })
-    }
+    
     render (){
         return(
-            <View style={{backgroundColor : '#FFF', height : 200, marginVertical : 5, flex : 1, flexDirection : 'column'}}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ItemLaporan', { index : this.props.index, judul : this.props.navigation.state.params.title, mhs : this.state.mhs, kode_kelas : this.props.items.key})} style={{backgroundColor : '#FFF', height : 70, marginVertical : 5, flex : 1, flexDirection : 'column'}}>
                 <View style={{flex : 1, flexDirection : 'row', paddingHorizontal : 10, paddingVertical : 10, }}>
                     <View style={{height : 50,  width : 50, justifyContent : 'center', alignItems : 'center'}}>
                         <Image style={{width: 50, height: 50, borderRadius : 50,}} source={this.props.items.img != null ? { uri: ConfigAPI.img_url+'/public'+this.props.items.img } : require('./component/logo.png') } />  
@@ -171,24 +178,7 @@ class Item extends React.PureComponent {
                         <Text style={{color : '#BABABA'}}>{this.props.items.nim + ' - ' +this.props.items.kelas}</Text> 
                     </View>
                 </View>
-                <View style={{flex : 1, flexDirection : 'column', marginTop : -50, borderTopWidth : 1, paddingTop : 10, borderTopWidth : 0.5, borderTopColor : '#D1D1D1'}}>   
-                    {
-                        this.props.items.file != undefined ? 
-                        <FlatList 
-                            data={this.state.users}
-                            horizontal = {true}
-                            showsHorizontalScrollIndicator = {false}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem = { ({item, index}) => (
-                                <ItemLaporan items={item} index={index} navigation={this.props.navigation} />
-                            )}
-                        /> : <View style={{backgroundColor : '#fff', height : 50, justifyContent : 'center', alignItems : 'center'}}>
-                                <Text style={{fontWeight : 'bold'}}>*Kosong</Text>
-                            </View>
-                    }       
-                    
-                </View>
-            </View>
+            </TouchableOpacity>
       )
     }
   }
@@ -202,35 +192,17 @@ class Item extends React.PureComponent {
         this.props.navigation.navigate('PdfRead', {fileName : ConfigAPI.img_url + '/public' + file});
     }
 
+
+
     render (){
-        // if (this.props.items.name != undefined && this.props.items.acc == 1) {
-        //     return(
-        //         <View style={[css.box,]}>
-        //             <Text>Laporan Ke.{this.props.items.row}</Text>
-        //             <Icon name="check-square" color="#5BAF5F"  type="font-awesome" />
-                    
-        //         </View>
-        //     )
-        // }
-        // else if (this.props.items.name != undefined && this.props.items.acc == 0) {
-            
-        // }
-        // else{
-        //     return(
-        //         <View style={css.box}>
-        //             <Icon name="folder-open" color="#2E4057"  type="font-awesome" />
-        //             <Text>Laporan Ke.{this.props.items.row}</Text>
-        //         </View>
-        //     )
-        // }
 
         return(
-            <View onPress={() => this.readFile(this.props.items.name)} style={css.box}>
+            <View style={css.box}>
                 <View style={css.labelLaporan}>
                     <Text>Laporan Ke.{this.props.items.row} - { this.props.items.name != undefined && this.props.items.acc == 0 ? 'Wait' : this.props.items.acc == 2 ? 'Reject' : this.props.items.name != undefined && this.props.items.acc == 1 ? 'Acc' : 'Kosong' }</Text>
                 </View>
                 <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-around'}}>
-                    <TouchableOpacity style={css.bundar}>
+                    <TouchableOpacity style={css.bundar} onPress={() => this.readFile(this.props.items.name)}>
                         <Icon name="check-square" color="#fff"  type="font-awesome" />
                     </TouchableOpacity>
                     <TouchableOpacity style={css.bundar}>

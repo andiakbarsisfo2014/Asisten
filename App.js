@@ -21,7 +21,11 @@ import Setting from './src/screens/Setting';
 import Pendahuluan from './src/screens/Pendahuluan';
 import Approver from './src/screens/Approved';
 import PdfRead from './src/screens/PdfRead';
+import ItemLaporan from './src/screens/ItemLaporan';
+import Gambar from './src/screens/Gambar';
 let Counter = connect(state => ({count : state.count}))(Timer);
+let ItemReport = connect(state => ({dataLaporan : state.dataLaporan}))(ItemLaporan);
+let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approver);
 
 const BootMenu = createStackNavigator({
     Setting : {screen : Setting},
@@ -43,6 +47,9 @@ const AppStack = createStackNavigator({
     Laporan : {
         screen : Laporan,
     },
+    Gambar : {
+        screen : Gambar,
+    },
     Mid : {
         screen : Mid,
     },
@@ -50,7 +57,10 @@ const AppStack = createStackNavigator({
         screen : Pendahuluan
     },
     Approver : {
-        screen : Approver
+        screen : ApproverPage
+    },
+    ItemLaporan : {
+        screen : ItemReport
     },
     Final : {
         screen : Final,
