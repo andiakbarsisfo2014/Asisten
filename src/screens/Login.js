@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import {Keyboard, Text, View, AsyncStorage, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, StyleSheet} from 'react-native';
+import {Keyboard, Text, TouchableOpacity, View, AsyncStorage, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, StyleSheet} from 'react-native';
 import { Button } from 'react-native-elements';
 
 import ConfigAPI from './config/ConfigAPI';
@@ -13,6 +13,10 @@ export default class LoginScreen extends Component {
             username : '',
             password : '', 
             isLoading : false,
+            label : 'Login Asisten',
+            btnLabel : 'Mahasiswa',
+            isAsisten : true,
+            placeholder : 'Username',
         }
     }
     render() {
@@ -22,15 +26,18 @@ export default class LoginScreen extends Component {
                     <View style={styles.loginScreenContainer}>
                         <View style={styles.loginFormView}>
                             <Text style={styles.logoText}>Asisten's App</Text>
-                            <TextInput placeholder="Username" value={this.state.username} onChange={(e) => this.setState({username : e.nativeEvent.text})} placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
+                            <TextInput placeholder={this.state.placeholder} value={this.state.username} onChange={(e) => this.setState({username : e.nativeEvent.text})} placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
                             <TextInput placeholder="Password" value={this.state.password} onChange={(e) => this.setState({password : e.nativeEvent.text})} placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true}/>
                             <Button
                                 buttonStyle={styles.loginButton}
                                 onPress={() => this.onLoginPress()}
-                                title="Login"
+                                title={this.state.label}
                                 loading={this.state.isLoading ? true: false}
                                 disabled = {this.state.isLoading ? true : false}
                             />
+                            <TouchableOpacity onPress={() => this.state.isAsisten ? this.setState({label : 'Login Mahasiswa', btnLabel : 'Asisten', isAsisten : false, placeholder : 'NIM'}) : this.setState({label : 'Login Asisten', btnLabel : 'Mahasiswa', isAsisten : true, placeholder : 'Username'})} style={{marginHorizontal : 10, alignItems : 'flex-end', marginTop : 5}}>
+                              <Text style={{color : 'blue'}}>{this.state.btnLabel}</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -40,8 +47,9 @@ export default class LoginScreen extends Component {
 
     async onLoginPress() {
         var that = this;
-        this.setState({isLoading : true})
-        const respons = await fetch(ConfigAPI.link+'login-asisten', {
+        this.setState({isLoading : true});
+        let urlPost = this.state.isAsisten ? ConfigAPI.link+'login-asisten' : ConfigAPI.link+'login-mahasiswa'; 
+        const respons = await fetch(urlPost, {
             method : 'POST',
             headers : {
                 'Accept': 'application/json',
@@ -62,9 +70,10 @@ export default class LoginScreen extends Component {
                 login_as : msg.success.login_as,
                 name : msg.success.name,
                 token : 'Bearer '+msg.success.token,
-                img : msg.success.img  
+                img : msg.success.img,
             }));
-            this.props.navigation.navigate('App')
+            this.props.dispatch({type : 'fromLogin', data : {img : msg.success.img, name : msg.success.name}});
+            this.state.isAsisten ? this.props.navigation.navigate('App') : this.props.navigation.navigate('Mhs');
         }
         else if (respons.status == 401) {
           that.setState({isLoading : false, password : ''});

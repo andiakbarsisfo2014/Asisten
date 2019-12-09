@@ -2,7 +2,7 @@
  * @format
  */
 import React from 'react';
-import {AppRegistry, Text} from 'react-native';
+import {AppRegistry, Text, AsyncStorage} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import AsistensService from './AsistensService';
@@ -43,8 +43,52 @@ function tryForLaporan(state, action) {
     }
   }
 }
-let store = createStore(combineReducers({ count: counter, dataLaporan : tryForLaporan }));
-let CountContainer = connect(state => ({ count: state.count, dataLaporan : state.dataLaporan }))(App);
+
+async function mainUseless() {
+  var attr = await AsyncStorage.getItem('attrLogin');
+  if (attr !== undefined) {
+    var real = JSON.parse(attr);
+    return {
+      name : real.name,
+      img : real.img,
+    }
+  }
+  else{
+    return null;
+  }
+}
+
+function imageLogin(state, action) {
+  if (typeof state === 'undefined') {
+    var json = mainUseless();
+    return json;
+  }
+  else{
+    if (action.type == 'fromLogin') {
+      return {
+        _55 : {
+          img : action.data.img,
+          name : action.data.name,
+        }
+      }
+    }
+    else if(action.type == 'fromGallery') {
+      return {
+        _55 : {
+          img : action.data,
+          name : state['_55'].name
+        }
+      };
+    }
+    else {
+      var json = mainUseless();
+      return json;
+    }
+  }
+}
+
+let store = createStore(combineReducers({ count: counter, dataLaporan : tryForLaporan, imageLogin :  imageLogin}));
+let CountContainer = connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin }))(App);
 
 const AsistenHeadless = async (data) => {
   store.dispatch({type : 'kirim', value : data});

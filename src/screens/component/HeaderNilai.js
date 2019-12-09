@@ -1,11 +1,28 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, InteractionManager, } from 'react-native';
+import {View, Text, TouchableOpacity, InteractionManager, AsyncStorage } from 'react-native';
 import {Avatar, Icon} from 'react-native-elements';
 import ConfigAPI from '../config/ConfigAPI';
 export default class HeaderNilai extends React.Component {
 
+    constructor (props) {
+        super(props);
+        this.state = {
+            token : '',
+        }
+    }
+
     showGallery = () => {
-        this.props.navigation.navigate('Gambar');
+        this.props.navigation.navigate('Gambar', {token : this.state.token});
+    }
+
+    componentDidMount () {
+        AsyncStorage.getItem('attrLogin').then((v) => {
+            var res = JSON.parse(v);
+            token = res.token;
+            this.setState({
+                token : token,
+            });
+        });
     }
 
     render () {

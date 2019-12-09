@@ -53,11 +53,12 @@ export default class Setting extends React.Component {
         });
         AsistensService.getPertemuan(
             (status) => {
-                this.setState({pertemuan : status})
+                this.setState({pertemuan : status, isLoading : false})
             }
         )
-        this.showProfile();
+        // this.showProfile();
     }
+
 
     logot = async () => {
        await AsyncStorage.clear();
@@ -65,7 +66,6 @@ export default class Setting extends React.Component {
     }
 
     showProfile = async () => {
-        var token;
         await AsyncStorage.getItem('attrLogin').then((v) => {
             var res = JSON.parse(v);
             token = res.token;
@@ -94,7 +94,7 @@ export default class Setting extends React.Component {
     render () {
     	return(
             <View style={{flex : 1, flexDirection : 'column'}}>
-    		    <HeaderNilai navigation={this.props.navigation} attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.state.nama, avatar_url : this.state.img}} />
+                <HeaderNilai navigation={this.props.navigation} attribute={{nim : '60900114063', name : 'Selamat Datang - '+this.props.imageLogin['_55'].name , avatar_url : this.props.imageLogin['_55'].img}} />
                 <View style={{flex : 1, flexDirection : 'row', height : 50,}}>
                     <View style={{height : 50, flex : 1, flexDirection : 'row', backgroundColor : '#fff', justifyContent : 'space-around', borderBottomWidth : 1, borderBottomColor : '#E0E5EA'}}>
                         <View style={css.labelMenu}>
@@ -134,9 +134,8 @@ export default class Setting extends React.Component {
                         </View>
                     </View>
                 </Modal>
-            </View>
-            
-    	)
+            </View>            
+        ) 
     }
 }    
 const css = StyleSheet.create ({

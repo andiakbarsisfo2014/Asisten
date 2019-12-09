@@ -1,12 +1,11 @@
 import React from 'react';
-import { AsyncStorage , ActivityIndicator, View, Text } from 'react-native';
+import { AsyncStorage , ActivityIndicator, Text, View} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
-import {createDrawerNavigator} from 'react-navigation-drawer';
-import { Icon } from 'react-native-elements';
+import { Icon, Avatar } from 'react-native-elements';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { Provider, connect } from 'react-redux';
-import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 
 import Absen from './src/screens/Absen';
 import Nilai from './src/screens/Nilai';
@@ -23,14 +22,59 @@ import Approver from './src/screens/Approved';
 import PdfRead from './src/screens/PdfRead';
 import ItemLaporan from './src/screens/ItemLaporan';
 import Gambar from './src/screens/Gambar';
+import MainHome from './src/screens/MainHome';
+
+import Mhs from './Mhs';
+import PraktikumMhs from './src/screens/Mhs/Praktikum';
 let Counter = connect(state => ({count : state.count}))(Timer);
 let ItemReport = connect(state => ({dataLaporan : state.dataLaporan}))(ItemLaporan);
 let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approver);
+let LoginPage = connect(state => ({imageLogin : state.imageLogin}))(Login);
+let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
+let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
+let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs)
+
+const DrawerContent = (props) => (
+    <View>
+      <View
+        style={{
+          backgroundColor: '#f50057',
+          height: 170,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Avatar
+                rounded
+                size="xlarge"
+                source={{uri : 'https://www.pinpng.com/pngs/m/510-5100567_react-native-svg-transformer-allows-you-import-svg.png'}}
+            />
+      </View>
+      <DrawerItems {...props} />
+    </View>
+  )
+
+const MhsStack = createDrawerNavigator (
+    {
+        Praktikum : {screen : PraktikumMhs},
+        Profil : {screen : MhsPage},
+    },
+    {
+        contentComponent : DrawerContent
+    }
+)
+
+// const MhsStack = createStackNavigator({
+//     Mhs : {screen : drawerMhs}
+// })
 
 const BootMenu = createStackNavigator({
-    Setting : {screen : Setting},
+    Setting : {screen : SettingPage},
     Useless : {
         screen : Praktikum,
+    },
+    Gambar : {
+        screen : GambarPage,
     },
 }, {initialRouteName : 'Setting'})
 
@@ -46,9 +90,6 @@ const AppStack = createStackNavigator({
     },
     Laporan : {
         screen : Laporan,
-    },
-    Gambar : {
-        screen : Gambar,
     },
     Mid : {
         screen : Mid,
@@ -79,12 +120,6 @@ const AppStack = createStackNavigator({
             header : null
         }
     }
-    // QrCode : {
-    //     screen : Scanner,
-    //     navigationOptions : {
-    //         header : null,
-    //     }
-    // }
 }, {initialRouteName : 'Prak'});
 
 const Tab = createBottomTabNavigator(
@@ -110,9 +145,10 @@ const Tab = createBottomTabNavigator(
     }
 )
 
+
 const AuthStack = createStackNavigator ({
     Login : {
-        screen : Login,
+        screen : LoginPage,
         navigationOptions : {
             header : null,
         }
@@ -126,9 +162,17 @@ class CheckAuth extends React.Component{
     }
 
     _storageSession = async () => {
-        await AsyncStorage.getItem('isLogin').then((value) => {
-            this.props.screenProps.fromNotif ?  this.props.navigation.navigate('Timer') :
-            this.props.navigation.navigate(value == 'login' ? 'App' : 'Auth');
+        await AsyncStorage.multiGet(['isLogin', 'attrLogin']).then((value) => {
+            if (this.props.screenProps.fromNotif) {
+                this.props.navigation.navigate('Timer')
+            } else {
+                let attrLogin = JSON.parse(value[1][1]); 
+                if (value[0][1] == 'login' && attrLogin.login_as == '003') {
+                    this.props.navigation.navigate('App');
+                } else {
+                    this.props.navigation.navigate('Mhs');
+                }
+            }
         })
         
     }
@@ -146,8 +190,12 @@ const Switch =  createSwitchNavigator(
             }
         },
         Auth : AuthStack,
+        MainHome : MainHome,
         App : {
             screen : Tab
+        },
+        Mhs : {
+            screen : MhsStack
         }
     },
     {

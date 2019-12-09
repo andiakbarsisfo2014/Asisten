@@ -3,6 +3,9 @@ package com.asistens;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import android.os.Bundle;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
 public class MainActivity extends ReactActivity {
 
@@ -22,8 +25,12 @@ public class MainActivity extends ReactActivity {
   		protected Bundle getLaunchOptions() {
   			Bundle initialProperties = new Bundle();
   			initialProperties.putBoolean("fromNotifi",false);
-       			return initialProperties;
-            }
-        };
-    }
+       	return initialProperties;
+      }
+      @Override
+      protected ReactRootView createRootView() {
+        return new RNGestureHandlerEnabledRootView(MainActivity.this);
+      }
+    };
+  }
 }
