@@ -46,7 +46,7 @@ function tryForLaporan(state, action) {
 
 async function mainUseless() {
   var attr = await AsyncStorage.getItem('attrLogin');
-  if (attr !== undefined) {
+  if (attr !== null) {
     var real = JSON.parse(attr);
     return {
       name : real.name,

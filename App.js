@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage , ActivityIndicator, Text, View} from 'react-native';
+import { AsyncStorage , Easing, Animated, ActivityIndicator, TouchableOpacity, Text, View} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
@@ -24,8 +24,11 @@ import ItemLaporan from './src/screens/ItemLaporan';
 import Gambar from './src/screens/Gambar';
 import MainHome from './src/screens/MainHome';
 
-import Mhs from './Mhs';
+import Mhs from './src/screens/Mhs/Profil';
 import PraktikumMhs from './src/screens/Mhs/Praktikum';
+
+import Logout from './src/screens/Logout';
+
 let Counter = connect(state => ({count : state.count}))(Timer);
 let ItemReport = connect(state => ({dataLaporan : state.dataLaporan}))(ItemLaporan);
 let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approver);
@@ -34,33 +37,76 @@ let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
 let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
 let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs)
 
-const DrawerContent = (props) => (
-    <View>
-      <View
-        style={{
-          backgroundColor: '#f50057',
-          height: 170,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Avatar
-                rounded
-                size="xlarge"
-                source={{uri : 'https://www.pinpng.com/pngs/m/510-5100567_react-native-svg-transformer-allows-you-import-svg.png'}}
-            />
-      </View>
-      <DrawerItems {...props} />
-    </View>
-  )
+const DrawerContent = (props) => {
+    console.log(props.imageLogin);
+    return (
+        <View style={{flex : 1, flexDirection : 'column'}}>
+            <View
+                style={{
+                    height : 170,
+                    backgroundColor : '#E8E8E8',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Avatar
+                    rounded
+                    size="xlarge"
+                    source={{uri : null}}
+                />
+            </View>
+            <View style={{flex : 1}}>
+                <DrawerItems 
+                    {...props}
+                    getLabel = {
+                        (scene) => (
+                            <View style={{marginBottom : 5, flex : 1, flexDirection : 'row', height : 40, alignItems : 'center'}}>
+                                <View style={{marginLeft : 10, marginRight : 10, width : 45,}}>
+                                    <Icon name={props.getLabel(scene) == 'Profil' ? 'id-card' : 'university' } color={props.activeItemKey == props.getLabel(scene) ? props.activeTintColor : null} type='font-awesome' /> 
+                                </View>
+                                <View>
+                                    <Text style={{fontSize : 16, fontWeight : 'bold', color : props.activeItemKey == props.getLabel(scene) ? props.activeTintColor : null}}>{props.getLabel(scene)}</Text>
+                                </View>
+                            </View>
+                        )
+                    }
+                />
+            </View>
+            <TouchableOpacity onPress={() => props.navigation.navigate('Logout')} style={{ flexDirection : 'row', height : 60, alignItems : 'center', backgroundColor :'#E8E8E8'}}>
+                <View style={{marginLeft : 10, marginRight : 10, width : 45,}}>
+                    <Icon name='sign-out' color={props.activeTintColor} type='font-awesome' /> 
+                </View>
+                <View>
+                    <Text style={{fontSize : 16, fontWeight : 'bold', color : props.activeTintColor}}>Logout</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+const DrawerContentPage = connect(state => ({imageLogin : state.imageLogin}))(DrawerContent);
+
+const MhsStackPraktikum = createStackNavigator({
+    Mhs : {screen : PraktikumMhs}
+});
+
+const MhsStackProfile = createStackNavigator({
+    Profil : {screen : MhsPage}
+})
 
 const MhsStack = createDrawerNavigator (
     {
-        Praktikum : {screen : PraktikumMhs},
-        Profil : {screen : MhsPage},
+        Praktikum : {screen : MhsStackPraktikum},
+        Profil : { screen : MhsStackProfile, },
     },
     {
-        contentComponent : DrawerContent
+        contentComponent : DrawerContentPage,
+        contentOptions : {
+            activeTintColor :'#004dcf',
+            inactiveTintColor :'#1999CE',
+            // activeBackgroundColor :'#1999CE',
+            // inactiveBackgroundColor :'#ffffff',
+        }
     }
 )
 
@@ -149,9 +195,9 @@ const Tab = createBottomTabNavigator(
 const AuthStack = createStackNavigator ({
     Login : {
         screen : LoginPage,
-        navigationOptions : {
+        navigationOptions: {
             header : null,
-        }
+        },
     }
 })
 
@@ -167,10 +213,14 @@ class CheckAuth extends React.Component{
                 this.props.navigation.navigate('Timer')
             } else {
                 let attrLogin = JSON.parse(value[1][1]); 
-                if (value[0][1] == 'login' && attrLogin.login_as == '003') {
-                    this.props.navigation.navigate('App');
+                if (attrLogin) {
+                    if (value[0][1] == 'login' && attrLogin.login_as == '003') {
+                        this.props.navigation.navigate('App');
+                    } else {
+                        this.props.navigation.navigate('Mhs');
+                    }
                 } else {
-                    this.props.navigation.navigate('Mhs');
+                    this.props.navigation.navigate('Auth');
                 }
             }
         })
@@ -178,7 +228,7 @@ class CheckAuth extends React.Component{
     }
 
     render(){
-        return(<ActivityIndicator />)
+        return(<ActivityIndicator style={{display : 'none'}} />)
     }
 } 
 
@@ -190,6 +240,7 @@ const Switch =  createSwitchNavigator(
             }
         },
         Auth : AuthStack,
+        Logout : Logout,
         MainHome : MainHome,
         App : {
             screen : Tab
@@ -199,11 +250,11 @@ const Switch =  createSwitchNavigator(
         }
     },
     {
-        initialRouteName: 'checkAuth',
+        initialRouteName : 'checkAuth',
+        
     }
 );
 
 const AppsContainer =  createAppContainer(Switch);
-
 export default AppsContainer;
 
