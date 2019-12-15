@@ -9,14 +9,14 @@ import { Provider, connect } from 'react-redux';
 export default class Mhs extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: "Asisten's App",
+            headerTitle : 'Profil',
             headerStyle: {
                 backgroundColor: '#004dcf',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
                 fontWeight: 'bold',
-            },
+            }
         };
     };
     render(){
