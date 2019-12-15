@@ -75,7 +75,6 @@ export default class Absen extends Component {
   }
 
   jsonParse = (json, prosesID) => {
-    console.log(json);
       if (json.response.length > 0) {
         this.setState({
           isLoading : false,

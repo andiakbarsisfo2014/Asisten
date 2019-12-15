@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Modal, InteractionManager, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList, StyleSheet} from 'react-native';
+import {View, StatusBar, Text, Modal, InteractionManager, ActivityIndicator, RefreshControl, AsyncStorage, TouchableHighlight, FlatList, StyleSheet} from 'react-native';
 import {Header, Icon, ListItem, Button} from 'react-native-elements';
 import HeaderNilai from './component/HeaderNilai';
 import ConfigAPI from './config/ConfigAPI';
@@ -21,9 +21,9 @@ class Main extends React.Component {
                     <TouchableHighlight style={css.rightComponent} onPress={() => navigation.getParam('logot')()}>
                         <Icon name="qrcode" type="font-awesome" color="#fff" />
                     </TouchableHighlight>
-                    <View style={css.rightComponent}>
-                        <Icon name="sign-out" type="font-awesome" color="#fff" onPress={() => navigation.getParam('logot')()} />
-                    </View>
+                    <TouchableHighlight style={css.rightComponent} onPress={() => navigation.getParam('logot')()}>
+                        <Icon name="sign-out" type="font-awesome" color="#fff" />
+                    </TouchableHighlight>
                 </View>
             )
         };
@@ -154,8 +154,7 @@ class Main extends React.Component {
     }
     
     logot = async () => {
-       await AsyncStorage.clear();
-       this.props.navigation.navigate('Auth');
+       this.props.navigation.navigate('Logout');
     }
 
     refresh = () => {
@@ -182,6 +181,7 @@ class Main extends React.Component {
     error = () => {
         return(
             <View  style={{flex : 1, justifyContent : "center", alignItems : 'center', }}>
+                <StatusBar backgroundColor="#004dcf" />
                 <View elevation={5} style={{height : 150, width : 250, justifyContent : "center", alignItems : 'center', padding:20,
                     backgroundColor:'#d9d9d9', shadowColor: "#000000", shadowOpacity: 0.8, shadowRadius: 2, 
                     shadowOffset: {
@@ -200,11 +200,7 @@ class Main extends React.Component {
         if (this.state.isLoading) {
             return(
                 <View style={{flex : 1, flexDirection : 'column'}}>
-                    {/*<Header
-                        leftComponent={{icon : 'buysellads', type: 'font-awesome', color : '#fff'}}
-                        centerComponent={{ text: 'Asisten App', style: { color: '#fff', fontSize : 19, fontWeight : 'bold' } }}
-                        rightComponent={this.rightComponent()}
-                    /> */}
+                    <StatusBar backgroundColor="#004dcf" />
                     <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
                         <ActivityIndicator size={35} color="grey" />
                     </View>
@@ -214,6 +210,7 @@ class Main extends React.Component {
         else{
             return(
                 <View style={{flex : 1, flexDirection : 'column'}}>
+                    <StatusBar backgroundColor="#004dcf" />
                     { this.state.loadingList ? <ActivityIndicator /> : this.state.showError ? this.error() : <FlatList 
                         data ={this.state.matkul}
                         refreshControl = {

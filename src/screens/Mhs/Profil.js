@@ -1,11 +1,11 @@
 import React from 'react';
+import {Text, View, StatusBar} from 'react-native';
 
-import {Text, View, Button, StatusBar } from 'react-native';
 
-export default class Praktikum extends React.Component {
+export default class Profil extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
-            headerTitle : 'Praktikum',
+            headerTitle : 'Profil',
             headerStyle: {
                 backgroundColor: '#004dcf',
             },
@@ -15,12 +15,11 @@ export default class Praktikum extends React.Component {
             }
         };
     };
-    render(){
+    render () {
         return (
             <View>
                 <StatusBar backgroundColor="#004dcf" />
-
-                <Text>Hai fuck</Text>
+                <Text>AA</Text>
             </View>
         )
     }

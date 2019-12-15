@@ -85,14 +85,12 @@ export default class Gambar extends React.Component {
     successUpload = (json) => {
         const { state, goBack } = this.props.navigation;
         this.props.dispatch({type : 'fromGallery', data : json.response.data });
-        // this.setState({isSending : false, isVisible : false});
+        this.setState({isSending : false, isVisible : false});
         goBack();
-        // 
     }     
 
     errorUpload = (json) => {
-        alert('Terjadi kesalahan upload');
-        console.log(json);
+        alert('Terjadi kesalahan upload, silahkan periksa ukuran file anda atau koneksi anda');
         this.setState({isSending : false, isVisible : false});
     }
 

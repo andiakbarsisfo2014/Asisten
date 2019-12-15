@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import {Keyboard, Text, TouchableOpacity, View, AsyncStorage, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, StyleSheet} from 'react-native';
+import {Keyboard, Text, StatusBar, TouchableOpacity, View, AsyncStorage, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, StyleSheet} from 'react-native';
 import { Button } from 'react-native-elements';
 
 import ConfigAPI from './config/ConfigAPI';
@@ -21,27 +21,26 @@ export default class LoginScreen extends Component {
     }
     render() {
         return (
-            <KeyboardAvoidingView style={styles.containerView} behavior="padding">
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={styles.loginScreenContainer}>
-                        <View style={styles.loginFormView}>
-                            <Text style={styles.logoText}>Asisten's App</Text>
-                            <TextInput placeholder={this.state.placeholder} value={this.state.username} onChange={(e) => this.setState({username : e.nativeEvent.text})} placeholderColor="#c4c3cb" style={styles.loginFormTextInput} />
-                            <TextInput placeholder="Password" value={this.state.password} onChange={(e) => this.setState({password : e.nativeEvent.text})} placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true}/>
-                            <Button
-                                buttonStyle={styles.loginButton}
-                                onPress={() => this.onLoginPress()}
-                                title={this.state.label}
-                                loading={this.state.isLoading ? true: false}
-                                disabled = {this.state.isLoading ? true : false}
-                            />
-                            <TouchableOpacity onPress={() => this.state.isAsisten ? this.setState({label : 'Login Mahasiswa', btnLabel : 'Asisten', isAsisten : false, placeholder : 'NIM'}) : this.setState({label : 'Login Asisten', btnLabel : 'Mahasiswa', isAsisten : true, placeholder : 'Username'})} style={{marginHorizontal : 10, alignItems : 'flex-end', marginTop : 5}}>
-                              <Text style={{color : 'blue'}}>{this.state.btnLabel}</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
+            <View style={{flex : 1, flexDirection : 'column', justifyContent : 'center'}} behavior="padding">
+              <StatusBar backgroundColor="#fff" />
+              <View style={{height : 100, width : '100%', justifyContent : 'center', marginBottom : 5}}>
+                <Text style={styles.logoText}>Asisten's App</Text>
+              </View>
+              <View style={{ height : 190,}}>
+                <TextInput style={{fontWeight : 'bold', borderColor : '#c4c3cb', marginTop : 10, marginHorizontal : 10, borderWidth : 1, borderRadius : 10, paddingHorizontal : 10}} placeholder={this.state.placeholder} value={this.state.username} onChange={(e) => this.setState({username : e.nativeEvent.text})} placeholderColor="#c4c3cb" />
+                <TextInput style={{fontWeight : 'bold', borderColor : '#c4c3cb', marginTop : 10, marginHorizontal : 10, borderWidth : 1, borderRadius : 10, paddingHorizontal : 10}} placeholder="Password" value={this.state.password} onChange={(e) => this.setState({password : e.nativeEvent.text})} placeholderColor="#c4c3cb" secureTextEntry={true}/>
+                <Button
+                  buttonStyle={styles.loginButton}
+                  onPress={() => this.onLoginPress()}
+                  title={this.state.label}
+                  loading={this.state.isLoading ? true: false}
+                  disabled = {this.state.isLoading ? true : false}
+                />
+              </View>
+              <TouchableOpacity onPress={() => this.state.isAsisten ? this.setState({label : 'Login Mahasiswa', btnLabel : 'Asisten', isAsisten : false, placeholder : 'NIM'}) : this.setState({label : 'Login Asisten', btnLabel : 'Mahasiswa', isAsisten : true, placeholder : 'Username'})} style={{marginHorizontal : 10, alignItems : 'flex-end', marginTop : 5}}>
+                <Text style={{color : 'blue'}}>{this.state.btnLabel}</Text>
+              </TouchableOpacity>
+            </View>
         );
     }
 
@@ -98,8 +97,6 @@ loginScreenContainer: {
 logoText: {
   fontSize: 40,
   fontWeight: "800",
-  marginTop: 150,
-  marginBottom: 30,
   textAlign: 'center',
 },
 loginFormView: {
