@@ -19,8 +19,6 @@ export default class Praktikum extends React.Component {
         return (
             <View>
                 <StatusBar backgroundColor="#004dcf" />
-
-                <Text>Hai fuck</Text>
             </View>
         )
     }
