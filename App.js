@@ -2,7 +2,8 @@ import React from 'react';
 import { AsyncStorage , Easing, Animated, ActivityIndicator, TouchableOpacity, Text, View} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
+
+import {createBottomTabNavigator, createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import { Icon, Avatar } from 'react-native-elements';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { Provider, connect } from 'react-redux';
@@ -25,7 +26,12 @@ import Gambar from './src/screens/Gambar';
 import MainHome from './src/screens/MainHome';
 
 import Mhs from './src/screens/Mhs/Profil';
+import QrCode from './src/screens/Mhs/Qrcode';
 import PraktikumMhs from './src/screens/Mhs/Praktikum';
+
+import DaftarNilaiMhs from './src/screens/Mhs/DaftarNilai';
+// import AbsenMhs from './src/screens/Mhs/Absen';
+// import TpMhs from './src/screens/Mhs/Tp';
 
 import Logout from './src/screens/Logout';
 
@@ -35,10 +41,11 @@ let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approve
 let LoginPage = connect(state => ({imageLogin : state.imageLogin}))(Login);
 let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
 let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
-let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs)
+let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs);
+let QrCodePage = connect(state => ({imageLogin : state.imageLogin}))(QrCode);
 
 const DrawerContent = (props) => {
-    console.log(props.imageLogin);
+    console.log(props);
     return (
         <View style={{flex : 1, flexDirection : 'column'}}>
             <View
@@ -84,35 +91,29 @@ const DrawerContent = (props) => {
     )
 }
 
-const DrawerContentPage = connect(state => ({imageLogin : state.imageLogin}))(DrawerContent);
-
-const MhsStackPraktikum = createStackNavigator({
-    Mhs : {screen : PraktikumMhs}
-});
-
-const MhsStackProfile = createStackNavigator({
-    Profil : {screen : MhsPage}
-})
-
-const MhsStack = createDrawerNavigator (
+const MhsStackMenu = createBottomTabNavigator(
     {
-        Praktikum : {screen : MhsStackPraktikum},
-        Profil : { screen : MhsStackProfile, },
+        Praktikum : {screen : PraktikumMhs},
+        Profil : { screen : MhsPage, },
     },
     {
-        contentComponent : DrawerContentPage,
-        contentOptions : {
-            activeTintColor :'#004dcf',
-            inactiveTintColor :'#1999CE',
-            // activeBackgroundColor :'#1999CE',
-            // inactiveBackgroundColor :'#ffffff',
-        }
+        headerMode : 'screen',
+        headerVisible : true
+        // navigationOptions : {
+        //     backgroundColor : 'red',
+        //     header : 'aa'
+        // }
     }
 )
 
-// const MhsStack = createStackNavigator({
-//     Mhs : {screen : drawerMhs}
-// })
+const MhsStack = createStackNavigator({
+    QrCode : {screen : QrCodePage},
+    MhsStack : {screen : MhsStackMenu},
+    Nilai : {screen : DaftarNilaiMhs}
+}, {
+    initialRouteName : 'MhsStack',
+})
+
 
 const BootMenu = createStackNavigator({
     Setting : {screen : SettingPage},
@@ -246,8 +247,9 @@ const Switch =  createSwitchNavigator(
             screen : Tab
         },
         Mhs : {
-            screen : MhsStack
-        }
+            screen : MhsStack,
+        },
+
     },
     {
         initialRouteName : 'checkAuth',

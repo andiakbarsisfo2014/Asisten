@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, View, StatusBar} from 'react-native';
+import {Text, View, StatusBar, Button} from 'react-native';
+
 
 
 export default class Profil extends React.Component {
@@ -15,11 +16,16 @@ export default class Profil extends React.Component {
             }
         };
     };
+    coba = () => {
+        this.props.navigation.navigate('QrCode')
+    }
     render () {
         return (
             <View>
                 <StatusBar backgroundColor="#004dcf" />
                 <Text>AA</Text>
+
+                <Button title="Coba" onPress={() => this.coba()} />
             </View>
         )
     }

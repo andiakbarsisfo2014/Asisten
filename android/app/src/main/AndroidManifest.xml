@@ -1,7 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.asistens">
+<manifest 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.asistens">
 
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -16,7 +17,8 @@
       android:label="@string/app_name"
       android:icon="@drawable/logo"
       android:roundIcon="@drawable/logo"
-      android:allowBackup="false"
+      android:allowBackup="false" 
+      android:usesCleartextTraffic="true" tools:targetApi="28"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"

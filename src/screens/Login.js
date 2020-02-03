@@ -60,6 +60,9 @@ export default class LoginScreen extends Component {
                     password : that.state.password
                 }
             )
+        }).catch((error) => {
+          that.setState({isLoading : false, password : ''});
+          alert('Gagal Login ');
         });
         if (respons.status == 200) {
             that.setState({isLoading : false, username : '', password : ''});

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.rumax.reactnative.pdfviewer.PDFViewPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
           // return packages;
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new SvgPackage(),
             new PDFViewPackage(),
             new RNCWebViewPackage(),
             new ReanimatedPackage(),

@@ -27,9 +27,17 @@ import java.util.ArrayList;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
+import android.graphics.Bitmap;
+
 public class AsistensModule extends ReactContextBaseJavaModule {
     ConterSession conterSession;
     public static final String REACT_CLASS = "AsistensService";
+    public static final int QRcodeWidth = 500;
     private static ReactApplicationContext reactContext;
     NotificationManager notificationManager;
     StorageReact storageReact;
@@ -46,9 +54,34 @@ public class AsistensModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getMyQrCode(Callback bitmapCallBack){
+       BitMatrix bitMatrix;
+        try {
+            bitMatrix = new MultiFormatWriter().encode("Akbar", BarcodeFormat.DATA_MATRIX.QR_CODE, this.QRcodeWidth, this.QRcodeWidth, null);
+            int bitMatrixWidth = bitMatrix.getWidth();
+            int bitMatrixHeight = bitMatrix.getHeight();
+            int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
+            for (int y = 0; y < bitMatrixHeight; y++) {
+                int offset = y * bitMatrixWidth;
+                for (int x = 0; x < bitMatrixWidth; x++) {
+                    pixels[offset + x] = bitMatrix.get(x, y) ?
+                            reactContext.getResources().getColor(R.color.QRCodeBlackColor): reactContext.getResources().getColor(R.color.QRCodeWhiteColor);
+                }
+            }
+            Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
+            bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
+            bitmapCallBack.invoke(bitmap);
+        } catch (Exception e) {
+
+        }
+    }
+
+    @ReactMethod
     public void startService() {
         this.reactContext.startService(new Intent(this.reactContext, AsistensService.class));
     }
+
+
 
     @ReactMethod
     public void stopService() {
