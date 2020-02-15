@@ -17,13 +17,13 @@ export default class Profil extends React.Component {
         };
     };
     coba = () => {
-        this.props.navigation.navigate('QrCode')
+        this.props.navigation.navigate('GambarPage')
     }
     render () {
         return (
             <View>
                 <StatusBar backgroundColor="#004dcf" />
-                <Text>AA</Text>
+                <Text>BB</Text>
 
                 <Button title="Coba" onPress={() => this.coba()} />
             </View>

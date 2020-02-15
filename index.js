@@ -87,8 +87,19 @@ function imageLogin(state, action) {
   }
 }
 
-let store = createStore(combineReducers({ count: counter, dataLaporan : tryForLaporan, imageLogin :  imageLogin}));
-let CountContainer = connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin }))(App);
+function dataNilaiSiswa(state, action) {
+    if (typeof state === 'undefined') {
+        return null;
+    }
+    else{
+        return {
+            data : action.data
+        }
+    }
+}
+
+let store = createStore(combineReducers({ count: counter, dataLaporan : tryForLaporan, imageLogin :  imageLogin, dataNilaiSiswa : dataNilaiSiswa}));
+let CountContainer = connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin, dataNilaiSiswa : state.dataNilaiSiswa }))(App);
 
 const AsistenHeadless = async (data) => {
   store.dispatch({type : 'kirim', value : data});

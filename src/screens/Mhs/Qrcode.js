@@ -5,6 +5,18 @@ import ConfigAPI from '../config/ConfigAPI';
 
 
 export default class Qrcode extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: 'Absen Qr-Code',
+            headerStyle: {
+                backgroundColor: '#004dcf',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+        };
+    };
     constructor(props) {
         super(props);
         this.state = {

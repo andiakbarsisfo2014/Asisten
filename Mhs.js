@@ -22,7 +22,7 @@ export default class Mhs extends React.Component {
     render(){
         return(
             <View>
-                <Text>aa</Text>
+                <Text>nnj</Text>
             </View>
         )
     }

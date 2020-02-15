@@ -60,10 +60,10 @@ export default class LoginScreen extends Component {
                     password : that.state.password
                 }
             )
-        }).catch((error) => {
-          that.setState({isLoading : false, password : ''});
-          alert('Gagal Login ');
-        });
+        }).catch (function(error) {
+            that.setState({isLoading : false, password : ''});
+            alert('Kesalahan Koneksi');
+        })
         if (respons.status == 200) {
             that.setState({isLoading : false, username : '', password : ''});
             var msg =  await respons.json();
@@ -82,10 +82,10 @@ export default class LoginScreen extends Component {
           var msg = await respons.json();
           alert('Gagal Login : '+msg.error);
         }
-        else{
-          that.setState({isLoading : false, password : ''});
-          alert('Gagal Login : '+respons.status);
-        }
+        // else{
+        //   that.setState({isLoading : false, password : ''});
+        //   alert('Kesalahan Koneksi : '+respons.status);
+        // }
     }
 }
 

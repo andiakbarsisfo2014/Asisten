@@ -97,6 +97,7 @@ export default class Gambar extends React.Component {
     componentDidMount () {
         InteractionManager.runAfterInteractions( () => {
             this.requestPermission();
+            
         });
     }
     async requestPermission () {

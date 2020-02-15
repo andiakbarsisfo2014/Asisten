@@ -1,11 +1,10 @@
 import React from 'react';
-import { AsyncStorage , Easing, Animated, ActivityIndicator, TouchableOpacity, Text, View} from 'react-native';
+import { AsyncStorage , ActivityIndicator, Text} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
 
-import {createBottomTabNavigator, createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
 import { Icon, Avatar } from 'react-native-elements';
-import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { Provider, connect } from 'react-redux';
 
 import Absen from './src/screens/Absen';
@@ -25,15 +24,14 @@ import ItemLaporan from './src/screens/ItemLaporan';
 import Gambar from './src/screens/Gambar';
 import MainHome from './src/screens/MainHome';
 
-import Mhs from './src/screens/Mhs/Profil';
-import QrCode from './src/screens/Mhs/Qrcode';
-import PraktikumMhs from './src/screens/Mhs/Praktikum';
+//move to INdex Mhs
+// import Mhs from './src/screens/Mhs/Profil';
+// import QrCode from './src/screens/Mhs/Qrcode';
+import IndexMhs from './src/screens/Mhs/Index';
 
-import DaftarNilaiMhs from './src/screens/Mhs/DaftarNilai';
-// import AbsenMhs from './src/screens/Mhs/Absen';
-// import TpMhs from './src/screens/Mhs/Tp';
 
 import Logout from './src/screens/Logout';
+
 
 let Counter = connect(state => ({count : state.count}))(Timer);
 let ItemReport = connect(state => ({dataLaporan : state.dataLaporan}))(ItemLaporan);
@@ -41,78 +39,17 @@ let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approve
 let LoginPage = connect(state => ({imageLogin : state.imageLogin}))(Login);
 let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
 let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
-let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs);
-let QrCodePage = connect(state => ({imageLogin : state.imageLogin}))(QrCode);
+let IndexMhsPage = connect(state => ( {imageLogin : state.imageLogin} ))(IndexMhs);
 
-const DrawerContent = (props) => {
-    console.log(props);
-    return (
-        <View style={{flex : 1, flexDirection : 'column'}}>
-            <View
-                style={{
-                    height : 170,
-                    backgroundColor : '#E8E8E8',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Avatar
-                    rounded
-                    size="xlarge"
-                    source={{uri : null}}
-                />
-            </View>
-            <View style={{flex : 1}}>
-                <DrawerItems 
-                    {...props}
-                    getLabel = {
-                        (scene) => (
-                            <View style={{marginBottom : 5, flex : 1, flexDirection : 'row', height : 40, alignItems : 'center'}}>
-                                <View style={{marginLeft : 10, marginRight : 10, width : 45,}}>
-                                    <Icon name={props.getLabel(scene) == 'Profil' ? 'id-card' : 'university' } color={props.activeItemKey == props.getLabel(scene) ? props.activeTintColor : null} type='font-awesome' /> 
-                                </View>
-                                <View>
-                                    <Text style={{fontSize : 16, fontWeight : 'bold', color : props.activeItemKey == props.getLabel(scene) ? props.activeTintColor : null}}>{props.getLabel(scene)}</Text>
-                                </View>
-                            </View>
-                        )
-                    }
-                />
-            </View>
-            <TouchableOpacity onPress={() => props.navigation.navigate('Logout')} style={{ flexDirection : 'row', height : 60, alignItems : 'center', backgroundColor :'#E8E8E8'}}>
-                <View style={{marginLeft : 10, marginRight : 10, width : 45,}}>
-                    <Icon name='sign-out' color={props.activeTintColor} type='font-awesome' /> 
-                </View>
-                <View>
-                    <Text style={{fontSize : 16, fontWeight : 'bold', color : props.activeTintColor}}>Logout</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
-    )
-}
+//move To Index
+// let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs);
+// let QrCodePage = connect(state => ({imageLogin : state.imageLogin}))(QrCode);
 
-const MhsStackMenu = createBottomTabNavigator(
-    {
-        Praktikum : {screen : PraktikumMhs},
-        Profil : { screen : MhsPage, },
-    },
-    {
-        headerMode : 'screen',
-        headerVisible : true
-        // navigationOptions : {
-        //     backgroundColor : 'red',
-        //     header : 'aa'
-        // }
-    }
-)
 
-const MhsStack = createStackNavigator({
-    QrCode : {screen : QrCodePage},
-    MhsStack : {screen : MhsStackMenu},
-    Nilai : {screen : DaftarNilaiMhs}
-}, {
-    initialRouteName : 'MhsStack',
-})
+
+
+
+
 
 
 const BootMenu = createStackNavigator({
@@ -242,18 +179,15 @@ const Switch =  createSwitchNavigator(
         },
         Auth : AuthStack,
         Logout : Logout,
-        MainHome : MainHome,
         App : {
             screen : Tab
         },
         Mhs : {
-            screen : MhsStack,
+            screen : IndexMhsPage,
         },
-
     },
     {
         initialRouteName : 'checkAuth',
-        
     }
 );
 

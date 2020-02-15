@@ -20,21 +20,23 @@ export default class Logout extends React.Component {
                 'Content-Type': 'application/json',
                 'Authorization' : token,
             }
-        });
-        if (result.status == 200) {
-            await AsyncStorage.clear();
-            this.props.navigation.navigate('Auth');
-        }
-        else{
-            Alert.alert(
-                'Message',
-                'Something wrong',
-                [
-                    {text : 'Ok', onPress : () => BackHandler.exitApp()}
-                ],
-                {cancelable : false}
-            )
-        }
+        })
+        await AsyncStorage.clear();
+        this.props.navigation.navigate('Auth');
+        // if (result.status == 200) {
+        //     await AsyncStorage.clear();
+        //     this.props.navigation.navigate('Auth');
+        // }
+        // else{
+        //     Alert.alert(
+        //         'Message',
+        //         'Something wrong',
+        //         [
+        //             {text : 'Ok', onPress : () => BackHandler.exitApp()}
+        //         ],
+        //         {cancelable : false}
+        //     )
+        // }
     }
     render(){
         return (
