@@ -21,6 +21,7 @@
       android:usesCleartextTraffic="true" tools:targetApi="28"
       android:theme="@style/AppTheme">
       <activity
+        android:launchMode="singleTop"
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -31,32 +32,37 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-      <activity android:name="com.asistens.NotificationActifity" />
+      <activity android:launchMode="singleTop" android:name="com.asistens.NotificationActifity" />
       <service
             android:name="com.asistens.AsistensService"
             android:enabled="true"
             android:exported="false" >
         </service>
-        <service
-            android:name="com.asistens.ConterService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
-        <service
+       <!--  <service
             android:name="com.asistens.AsistensEventService">
-        </service>
+        </service> -->
         <receiver
             android:name="com.asistens.BootUpReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DESTROY_MAIN_SERVICE" />
             </intent-filter>
         </receiver>
+        <service
+            android:name="com.asistens.ConterService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name="com.asistens.ConterEvent">
+        </service>
         <receiver
             android:name="com.asistens.CounterReciver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.CONTER_RECIVER" />
             </intent-filter>
         </receiver>
     </application>

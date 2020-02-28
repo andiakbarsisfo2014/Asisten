@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, ActivityIndicator, AsyncStorage, StatusBar, BackHandler, Alert} from 'react-native';
 
 import ConfigApi from './config/ConfigAPI';
-
+import AsistensService from '../../AsistensService';
 export default class Logout extends React.Component {
     async componentDidMount () {
         let attrLogin = await AsyncStorage.getItem('attrLogin');
@@ -22,6 +22,7 @@ export default class Logout extends React.Component {
             }
         })
         await AsyncStorage.clear();
+        AsistensService.deleteDataSocket();
         this.props.navigation.navigate('Auth');
         // if (result.status == 200) {
         //     await AsyncStorage.clear();

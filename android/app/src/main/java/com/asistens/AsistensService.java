@@ -25,93 +25,81 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URL;
+import android.os.AsyncTask;
+import org.json.JSONArray;
+import org.json.JSONException;
+import java.util.HashMap;
+import android.os.Build;
+
+
 
 public class AsistensService extends Service {
 
     private static final int SERVICE_NOTIFICATION_ID = 12345;
     private static final String CHANNEL_ID = "Asistens";
     ConterSession conterSession;
-    private String EVENT_DATE_TIME = "2019-12-31 02:44:00";
+    StorageReact storageReact;
+    ReactApplicationContext reactApplicationContext;
+    private String EVENT_DATE_TIME = "2020-12-31 02:44:00";
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    
     private Handler handler = new Handler();
+
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
-            
-            
             try{
-                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-                Date event_date = dateFormat.parse(EVENT_DATE_TIME);
-                Date current_date = new Date();
-                long diff;
-                long Days = 0;
-                long Hours = 0;
-                long Minutes = 0;
-                long Seconds = 0;
-                if (!current_date.after(event_date)) {
-                    diff = event_date.getTime() - current_date.getTime();
-                    Days = diff / (24 * 60 * 60 * 1000);
-                    Hours = diff / (60 * 60 * 1000) % 24;
-                    Minutes = diff / (60 * 1000) % 60;
-                    Seconds = diff / 1000 % 60;
-                }
-                else{
-                    Minutes = 0 ;
-                    Seconds = 0;
-                    handler.removeCallbacks(runnableCode);
-                }
                 Context context = getApplicationContext();
                 Intent myIntent = new Intent(context, AsistensEventService.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("Seconds", Seconds+"");
-                bundle.putString("Minutes", Minutes+"");
+                bundle.putString("Service", "Yes");
                 myIntent.putExtras(bundle);
                 context.startService(myIntent);
-                HeadlessJsTaskService.acquireWakeLockNow(context);
-                handler.postDelayed(this, 1000); 
+                HeadlessJsTaskService.acquireWakeLockNow(context);                
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
-
-            
         }
     };
+    
 
-    private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://103.55.216.17:3000/");
-        } catch (URISyntaxException e) {}
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            // NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "HEARTBEAT", importance);
-            // channel.setDescription("CHANEL DESCRIPTION");
-            // NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            // notificationManager.createNotificationChannel(channel);
+    private void generateNotif (String msg){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("Asistens", "Asistens", importance);
+            channel.setDescription("Asistens");
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
-    }
+        Intent notificationIntent = new Intent(this, BootUpReceiver.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+        notificationIntent.putExtra("data", "yes");
+        notificationIntent.putExtra("praktikum", msg);
+        PendingIntent contentIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+            .setSmallIcon(R.drawable.logo)
+            .setContentIntent(contentIntent)
+            .setPriority(1)
+            .setDefaults(Notification.DEFAULT_ALL)
+            // .setOngoing(true)
+            .setAutoCancel(true)
+            .setContentTitle("Asistens")
+            .setContentText(msg);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager.notify(001, mBuilder.build());
 
-    private void generateNotif (){
-        Intent notificationIntent = new Intent(this, NotificationActifity.class);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); 
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Notification notification = new NotificationCompat.Builder(this, "Tagal")
-                .setContentTitle("Asistens")
-                .setContentText("Kelas dimulai")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(contentIntent)
-                .setPriority(1)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setOngoing(true)
-                .build();
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.notify(0,notification);
     }
 
     @Override
@@ -122,27 +110,60 @@ public class AsistensService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // this.handler.removeCallbacks(this.runnableCode);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        conterSession = new ConterSession(this);
-        conterSession.setSession();
-        mSocket.connect();
-        mSocket.on("new_regist_client", new Emitter.Listener(){
+        
+        Context mContext = getApplicationContext();
+        SocketIO mSocketIO = new SocketIO(mContext);
+        Socket socket = mSocketIO.configSocket();
+        socket.on("ping", new Emitter.Listener() {
             @Override
-            public void call(Object... args){
-                generateNotif();
-                handler.post(runnableCode);
+            public void call(final Object... dataRespopn) {
+                socket.emit("pong");
             }
         });
+        socket.on("connect", new Emitter.Listener() {
+            @Override
+            public void call(final Object... dataRespopn) {
+                socket.emit("checkMyNotif");
+            }
+        });
+
+        socket.on("notifikasi", new Emitter.Listener() {
+            @Override
+            public void call(final Object... dataRespopn) {
+                JSONObject data = (JSONObject) dataRespopn[0];
+                try {
+                    if(data.getBoolean("allow_count")) {
+                        generateNotif(data.getString("praktikum"));
+                        Intent intent = new Intent(mContext, ConterService.class);
+                        intent.putExtra("time", data.getString("time"));
+                        mContext.stopService(new Intent(mContext, ConterService.class));
+                        mContext.startService(intent);
+                    }
+                    else{
+                        mContext.stopService(new Intent(mContext, ConterService.class));
+                    }
+
+                } catch (JSONException e) {
+                    return;
+                }
+            }
+        });
+        if(mSocketIO.allowConnect()) {
+            socket.connect();
+        }
+        else{
+            socket.disconnect();
+        }
         return START_STICKY;
     }
 

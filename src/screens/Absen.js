@@ -194,6 +194,7 @@ class Item extends React.PureComponent {
     this.state = {
       isRequest : false,
       failed : false,
+      statusAbsen : this.props.items.status,
       textStatus : this.props.items.status == undefined ? 'Kosong' : this.props.items.status == 1 ? 'Hadir' : this.props.items.status == 2 ? 'Alfa' : 'Otw',
     }
   }
@@ -217,7 +218,7 @@ class Item extends React.PureComponent {
   }
 
   success = (json, status) => {
-    this.setState({isRequest : false, failed : false, textStatus : status == 1 ?  'Hadir' : status == 2 ? 'Alfa' : 'Otw' });
+    this.setState({statusAbsen: status, isRequest : false, failed : false, textStatus : status == 1 ?  'Hadir' : status == 2 ? 'Alfa' : 'Otw' });
   }
 
   failed = () => {
@@ -225,6 +226,7 @@ class Item extends React.PureComponent {
   }
 
   render (){
+    console.log(this.props.items);
     return(
       
       <View style={{backgroundColor : '#FFF', height : 160, marginVertical : 5, flex : 1, flexDirection : 'column',}}>
@@ -238,30 +240,35 @@ class Item extends React.PureComponent {
           </View>
         </View>
         <View style={{flex : 1, flexDirection : 'column', marginTop : 15}}>
-          <View style={styles.btnGruop}>
-              <TouchableHighlight disabled={this.props.items.allow_absen ? false : true} underlayColor="#E8E8E8" style={[styles.btnCss, {backgroundColor : this.props.items.allow_absen ? null : '#D1D1D1'} ]} onPress={() => this.absen(1, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="check-square" color="#5BAF5F"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Hadir</Text>
-                  </View>
-              </TouchableHighlight>
-            
-              <TouchableHighlight underlayColor="#E8E8E8" style={styles.btnCss} onPress={() => this.absen(2, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="ban" color="#BC3838"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Alfa</Text>
-                  </View>
-              </TouchableHighlight>
-              <TouchableHighlight underlayColor="#E8E8E8" style={styles.btnCss} onPress={() => this.absen(3, this.props.items.key)}>
-                  <View style={styles.btnContent}>
-                    <Icon name="car" color="#004dcf"  type="font-awesome" />
-                    <Text style={styles.iconBtn}>Otw</Text>
-                  </View>
-              </TouchableHighlight>
-          </View>
+            {
+                this.props.items.allow_absen != undefined ?
+                <View style={styles.btnGruop}>
+                    <TouchableHighlight underlayColor="#E8E8E8" style={[styles.btnCss, {backgroundColor : this.state.statusAbsen == 1 ? '#D1D1D1' : null } ]} onPress={() => this.absen(1, this.props.items.key)}>
+                        <View style={styles.btnContent}>
+                            <Icon name="check-square" color="#5BAF5F"  type="font-awesome" />
+                            <Text style={styles.iconBtn}>Hadir</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor="#E8E8E8" style={[styles.btnCss, {backgroundColor : this.state.statusAbsen == 2 ? '#D1D1D1' : null }]} onPress={() => this.absen(2, this.props.items.key)}>
+                        <View style={styles.btnContent}>
+                            <Icon name="ban" color="#BC3838"  type="font-awesome" />
+                            <Text style={styles.iconBtn}>Alfa</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor="#E8E8E8" style={[styles.btnCss, {backgroundColor : this.state.statusAbsen == 3 ? '#D1D1D1' : null }]} onPress={() => this.absen(3, this.props.items.key)}>
+                        <View style={styles.btnContent}>
+                            <Icon name="car" color="#004dcf"  type="font-awesome" />
+                            <Text style={styles.iconBtn}>Otw</Text>
+                        </View>
+                    </TouchableHighlight>
+                </View> :
+                <View style={[styles.btnGruop, {alignItems: 'center', justifyContent: 'center'}]}>
+                    <Text style={{color: 'red', fontWeight: 'bold'}}>*Pastikan Nilai Terpenuhi</Text>
+                </View>
+            }
         </View>
         {this.state.isRequest ? <View style={{flex : 1, justifyContent : 'center', alignItems : 'center', flexDirection : 'row', height: 160, width : '100%', position : 'absolute', left : 0, top : 0, backgroundColor : 'rgba(52, 52, 52, 0.2)'}}>
-          {!this.state.failed ? <ActivityIndicator size="large" color="#FFF" /> : <Text>Coba</Text>}
+          {!this.state.failed ? <ActivityIndicator size="large" color="#FFF" /> : <Text style={{fontWeight : 'bold'}}>Terjadi kesalahan</Text>}
         </View> : null}
       </View>
     )
@@ -274,10 +281,10 @@ const styles = StyleSheet.create({
     marginLeft: -100,
     justifyContent: 'center',
   },
-  btnGruop : {flex : 6, backgroundColor : '#fff', marginHorizontal : 15, flexDirection : 'row', borderTopWidth : 0.5, borderTopColor : '#D1D1D1'},
+  btnGruop : {flex : 6, backgroundColor : '#fff', marginHorizontal : 15, flexDirection : 'row'},
   btnContent : {flexDirection : 'row', flex : 1, alignItems : 'center', justifyContent : 'center'},
   iconBtn : {marginLeft : 10, color : '#545454', fontWeight : 'bold'},
-  btnCss : {height : 35, width : '33%'},
+  btnCss : {height : 35, width : '33%', borderRadius: 5},
   absoluteCell: {
     position: 'absolute',
     top: 0,

@@ -27,24 +27,41 @@ import java.util.ArrayList;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-
 import android.graphics.Bitmap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
+import javax.annotation.Nullable;
 
-public class AsistensModule extends ReactContextBaseJavaModule {
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import android.content.IntentFilter;
+import com.facebook.react.bridge.ActivityEventListener;
+import android.app.Activity;
+import android.widget.Toast;
+import android.preference.PreferenceManager;
+import android.content.Context;
+import com.github.nkzawa.socketio.client.Socket;
+
+public class AsistensModule extends ReactContextBaseJavaModule implements ActivityEventListener{
     ConterSession conterSession;
     public static final String REACT_CLASS = "AsistensService";
     public static final int QRcodeWidth = 500;
-    private static ReactApplicationContext reactContext;
+    public static ReactApplicationContext reactContext;
+    Context mContext;
     NotificationManager notificationManager;
     StorageReact storageReact;
+    BootUpReceiver mBootUpReceiver;
+    CounterReciver mCounterReciver;
 
-    public AsistensModule(@Nonnull ReactApplicationContext reactContext) {
+    public AsistensModule(@Nonnull ReactApplicationContext reactContext, Context mContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.mContext = mContext;
+        this.mBootUpReceiver = new BootUpReceiver();
+        this.mCounterReciver = new CounterReciver();
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(reactContext);
+        localBroadcastManager.registerReceiver(mBootUpReceiver, new IntentFilter("notification-press"));
+
     }
 
     @Nonnull
@@ -53,40 +70,36 @@ public class AsistensModule extends ReactContextBaseJavaModule {
         return REACT_CLASS;
     }
 
-    @ReactMethod
-    public void getMyQrCode(Callback bitmapCallBack){
-       BitMatrix bitMatrix;
-        try {
-            bitMatrix = new MultiFormatWriter().encode("Akbar", BarcodeFormat.DATA_MATRIX.QR_CODE, this.QRcodeWidth, this.QRcodeWidth, null);
-            int bitMatrixWidth = bitMatrix.getWidth();
-            int bitMatrixHeight = bitMatrix.getHeight();
-            int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
-            for (int y = 0; y < bitMatrixHeight; y++) {
-                int offset = y * bitMatrixWidth;
-                for (int x = 0; x < bitMatrixWidth; x++) {
-                    pixels[offset + x] = bitMatrix.get(x, y) ?
-                            reactContext.getResources().getColor(R.color.QRCodeBlackColor): reactContext.getResources().getColor(R.color.QRCodeWhiteColor);
-                }
-            }
-            Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
-            bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
-            bitmapCallBack.invoke(bitmap);
-        } catch (Exception e) {
-
-        }
+    public static String Akbar(){
+        return "Akbar";
     }
 
     @ReactMethod
     public void startService() {
-        this.reactContext.startService(new Intent(this.reactContext, AsistensService.class));
+        if (!isMyServiceRunning(AsistensService.class)) {
+            this.reactContext.startService(new Intent(this.reactContext, AsistensService.class));
+        }
     }
 
+    public void sendEvent (String eventName, @Nullable WritableMap params) {
+        this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
+    }   
 
+    @ReactMethod
+    public void panggilKa() {
+        WritableMap params = Arguments.createMap();
+        params.putString("eventProperty", "someValue");
+    }
 
     @ReactMethod
     public void stopService() {
         this.reactContext.stopService(new Intent(this.reactContext, AsistensService.class));
     }
+
+    // @ReactMethod 
+    // public void sendDataSocket (String eventName, JSONObject) {
+
+    // }
 
     @ReactMethod
     public void startCounter() {
@@ -104,23 +117,8 @@ public class AsistensModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void getListImage(Callback fileCallBack) {
-        // String path = Environment.getExternalStorageDirectory().toString()+"/Pictures";
-        // File directory = new File(path);
-        // File[] files = directory.listFiles();
-        
         JSONObject allFile = new JSONObject();
         JSONArray arrFileName = new JSONArray();
-        // try {
-        //     for (int i = 0; i < files.length; i++){
-        //         fileNames.put("fileName", files[i].getName());
-        //         arrFileName.put(fileNames);
-        //     }
-        //     allFile.put("files", arrFileName);
-        // } catch (JSONException e) {
-        //     e.printStackTrace();
-        // }
-        // fileCallBack.invoke(allFile.toString());
-
         final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
         Cursor imagecursor = reactContext.getContentResolver().query(
@@ -149,26 +147,50 @@ public class AsistensModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setPertemuan(String value) {
-        storageReact = new StorageReact(this.reactContext);
+        storageReact = new StorageReact(this.mContext);
         storageReact.set_value ("pertemuan", value);
     }
 
+    @ReactMethod 
+    public void setDataSocket(String key, String value){
+        storageReact = new StorageReact(this.mContext);
+        storageReact.set_value (key, value);
+    }
+
     @ReactMethod
-    public void showNotif () {
-        Intent notificationIntent = new Intent(this.reactContext, NotificationActifity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this.reactContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        Notification notification = new NotificationCompat.Builder(this.reactContext, "Tagal")
-                .setContentTitle("Heartbeat service")
-                .setContentText("Running...")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(contentIntent)
-                .setPriority(1)
-                .build();
-        NotificationManager notificationManager = this.reactContext.getSystemService(NotificationManager.class);
-        notificationManager.notify(0,notification);
+    public void deleteDataSocket() {
+        storageReact = new StorageReact(this.mContext);
+        storageReact.delete_value();
     }
 
     @ReactMethod 
+    public void connectSocket() {
+        // SocketIO mSocketIO = new SocketIO(this.mContext);
+        // Socket socket = mSocketIO.configSocket();
+        // socket.disconnect();
+        // socket.connect();
+        this.reactContext.startService(new Intent(this.reactContext, AsistensService.class));
+    }
+
+    @ReactMethod
+    public void showNotif() {
+        Intent notificationIntent = new Intent(this.reactContext, NotificationActifity.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); 
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(this.reactContext, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.reactContext)
+            .setSmallIcon(R.drawable.logo)
+            .setContentIntent(contentIntent)
+            .setPriority(1)
+            .setDefaults(Notification.DEFAULT_ALL)
+            .setOngoing(true)
+            .setContentTitle("My notification")
+            .setContentText("Hello World!");
+        NotificationManager mNotificationManager = (NotificationManager) this.reactContext.getSystemService(this.reactContext.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(001, mBuilder.build());
+    }
+
+    // @ReactMethod 
     public boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) this.reactContext.getSystemService(this.reactContext.ACTIVITY_SERVICE);
         for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -178,4 +200,21 @@ public class AsistensModule extends ReactContextBaseJavaModule {
         }
         return false;
     }
+
+    @ReactMethod 
+    public void set_session_by_java (String key, String value) {
+        storageReact = new StorageReact(this.reactContext);
+        storageReact.set_value(key, value);
+    }
+
+    @ReactMethod 
+    public void active(Boolean active) {
+        PreferenceManager.getDefaultSharedPreferences(this.reactContext).edit().putBoolean("isActive", active).commit();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {}
+
+    @Override
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {}
 }

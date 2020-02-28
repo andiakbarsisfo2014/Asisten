@@ -16,11 +16,12 @@ import com.facebook.react.shell.MainReactPackage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+import android.content.Intent;
+import android.util.Log;
+
 
 public class MainApplication extends Application implements ReactApplication {
-
-  private final ReactNativeHost mReactNativeHost =
-      new ReactNativeHost(this) {
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
         public boolean getUseDeveloperSupport() {
           return BuildConfig.DEBUG;
@@ -28,41 +29,38 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-          // @SuppressWarnings("UnnecessaryLocalVariable")
-          // List<ReactPackage> packages = new PackageList(this).getPackages();
-          // // Packages that cannot be autolinked yet can be added manually here, for example:
-          // // packages.add(new MyReactNativePackage());
-          // return packages;
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
-            new SvgPackage(),
-            new PDFViewPackage(),
-            new RNCWebViewPackage(),
-            new ReanimatedPackage(),
-            new RNGestureHandlerPackage(),
-                new AsistensPackage()
+                new SvgPackage(),
+                new PDFViewPackage(),
+                new RNCWebViewPackage(),
+                new ReanimatedPackage(),
+                new RNGestureHandlerPackage(),
+                new AsistensPackage(getApplicationContext())
             );
         }
 
         @Override
         protected String getJSMainModuleName() {
-          return "index";
+            return "index";
         }
-      };
+    };
 
       
 
-  @Override
-  public ReactNativeHost getReactNativeHost() {
-    return mReactNativeHost;
-  }
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
-    initializeFlipper(this); // Remove this line if you don't want Flipper enabled
-  }
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, /* native exopackage */ false);
+        initializeFlipper(this); // Remove this line if you don't want Flipper enabled
+    }
+
+    
 
   /**
    * Loads Flipper in React Native templates.

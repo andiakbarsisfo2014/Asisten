@@ -14,9 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-import com.github.nkzawa.emitter.Emitter;
 import com.facebook.react.HeadlessJsTaskService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,13 +25,11 @@ import  android.util.Log;
 public class ConterService extends Service {
 
     private Handler handler = new Handler();
-    private String EVENT_DATE_TIME = "2019-10-08 16:00:00";
+    private String EVENT_DATE_TIME = "2020-02-22 23:51:00";
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
-            
-            
             try{
                 SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
                 Date event_date = dateFormat.parse(EVENT_DATE_TIME);
@@ -45,7 +40,7 @@ public class ConterService extends Service {
                 long Minutes = 0;
                 long Seconds = 0;
                 Context context = getApplicationContext();
-                Intent myIntent = new Intent(context, AsistensEventService.class);
+                Intent myIntent = new Intent(context, ConterEvent.class);
                 Bundle bundle = new Bundle();
                 if (!current_date.after(event_date)) {
                     diff = event_date.getTime() - current_date.getTime();
@@ -59,22 +54,19 @@ public class ConterService extends Service {
                     context.startService(myIntent);
                     HeadlessJsTaskService.acquireWakeLockNow(context);
                     handler.postDelayed(this, 1000); 
-
                 }
                 else{
                     Minutes = 0 ;
                     Seconds = 0;
                     bundle.putString("Seconds", Seconds+"");
                     bundle.putString("Minutes", Minutes+"");
-                    myIntent.putExtras(bundle);
-                    context.startService(myIntent);
-                    HeadlessJsTaskService.acquireWakeLockNow(context);
-                    handler.removeCallbacks(this);
+                    handler.removeCallbacks(runnableCode);
+                    stopSelf();
                 }
             }
             catch (Exception e) {
                 e.printStackTrace();
-            } 
+            }
         }
     };
 
@@ -84,7 +76,6 @@ public class ConterService extends Service {
 
     public void onCreate() {
         super.onCreate();
-
     }
 
     public void onDestroy() {
@@ -93,7 +84,18 @@ public class ConterService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        this.handler.post(this.runnableCode);
+        if(intent != null){
+            String time  = intent.getStringExtra("time");
+            if(time != null){
+                EVENT_DATE_TIME = time;
+                this.handler.post(this.runnableCode);
+            }
+            else{
+                stopSelf();
+            }
+        }
+
+        // 
         return START_STICKY;
     }
 }

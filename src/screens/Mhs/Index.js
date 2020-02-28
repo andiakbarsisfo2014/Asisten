@@ -18,6 +18,9 @@ import Laporan from './Laporan';
 import Pdf from '../PdfRead';
 import Dokumen from './Dokomen';
 import Gambar from '../Gambar';
+import Timer from '../Timer';
+
+let Counter = connect(state => ({count : state.count}))(Timer);
 
 let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
 const Absen_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Absen);
@@ -100,6 +103,11 @@ const MhsStack = createStackNavigator(
                 gesturesEnabled : true,
                 gestureDirection : 'horizontal'
             })
+        },
+        Timer : { screen : Counter
+            // screen : ({navigation, screenProps}) => {
+            //     return <Counter />
+            // },
         },
         Tp : {screen : Tp_},
         Respon : { screen : Respon_ },

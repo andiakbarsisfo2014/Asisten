@@ -250,17 +250,22 @@ class Item extends React.PureComponent {
   }
   absen = (status, id_kelas) => {
     this.setState({isRequest : true, isLoading : true});
-    var aa = fetch(this.props.uri,{
-      method : 'POST',
-      headers : {
-          'Accept' : 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization' : this.props.token,
-      },
-      body : this.dataBody(id_kelas),
-    }).then(response  => response.json())
-      .then(json => this.success(json))
-      .catch((error) => this.failed(error))
+    if ( Number(this.state.textStatus) && (Number(this.state.textStatus) >= 0 && Number(this.state.textStatus) <= 100) ) {
+      var aa = fetch(this.props.uri,{
+        method : 'POST',
+        headers : {
+            'Accept' : 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization' : this.props.token,
+        },
+        body : this.dataBody(id_kelas),
+      }).then(response  => response.json())
+        .then(json => this.success(json))
+        .catch((error) => this.failed(error))
+    } else {
+      alert("Pastikan Nilai 0-100");
+      this.setState({isRequest : false, isLoading: false});
+    }
   }
 
   success = (json) => {
@@ -275,7 +280,7 @@ class Item extends React.PureComponent {
   }
 
   sendValue = (id_kelas) => {
-    if (this.state.textStatus >= 0 && this.state.textStatus <= 100) {
+    if ( Number(this.state.textStatus) && (Number(this.state.textStatus) >= 0 && Number(this.state.textStatus) <= 100) ) {
       this.setState({isRequest : true});
       var aa = fetch(this.props.uri,{
         method : 'POST',
@@ -290,7 +295,7 @@ class Item extends React.PureComponent {
         .catch(() => this.failed())
     }
     else{
-      alert('Angka tidak sesuai');
+      alert("Pastikan Nilai 0-100");
     }
   }
 

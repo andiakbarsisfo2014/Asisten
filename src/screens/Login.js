@@ -4,7 +4,7 @@ import {Keyboard, Text, StatusBar, TouchableOpacity, View, AsyncStorage, TextInp
 import { Button } from 'react-native-elements';
 
 import ConfigAPI from './config/ConfigAPI';
-
+import AsistensService from '../../AsistensService';
 
 export default class LoginScreen extends Component {
     constructor(props){
@@ -74,6 +74,9 @@ export default class LoginScreen extends Component {
                 token : 'Bearer '+msg.success.token,
                 img : msg.success.img,
             }));
+            AsistensService.setDataSocket("loginAs", msg.success.login_as);
+            AsistensService.setDataSocket("token", 'Bearer '+msg.success.token);
+            AsistensService.connectSocket();
             this.props.dispatch({type : 'fromLogin', data : {img : msg.success.img, name : msg.success.name}});
             this.state.isAsisten ? this.props.navigation.navigate('App') : this.props.navigation.navigate('Mhs');
         }

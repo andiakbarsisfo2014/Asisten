@@ -1,10 +1,10 @@
 import React from 'react';
 import { Overlay } from 'react-native-elements'
-import {Text, ToastAndroid, View, RefreshControl, TouchableHighlight, Dimensions, ActivityIndicator, FlatList, StatusBar, AsyncStorage, InteractionManager } from 'react-native';
+import {NativeEventEmitter, NativeModules, Text, ToastAndroid, View, RefreshControl, TouchableHighlight, Dimensions, ActivityIndicator, FlatList, StatusBar, AsyncStorage, InteractionManager } from 'react-native';
 import {ListItem, Button} from 'react-native-elements';
 import {Icon} from 'react-native-elements';
 import ConfigAPI from '../config/ConfigAPI';
-import AsistenService from '../../../AsistensService';
+import AsistensService from '../../../AsistensService';
 
 class Template extends React.PureComponent {
     constructor(props) {
@@ -105,6 +105,9 @@ export default class Praktikum extends React.Component {
         InteractionManager.runAfterInteractions( () => {
             this.doRequest();
         });
+
+        
+
     }
 
     set_active_view = (index) => {
@@ -180,6 +183,10 @@ export default class Praktikum extends React.Component {
         this.setState({ kode_kelas : null })
     }
 
+    panggilKa = () => {
+        alert('Fuck YOu');
+    }
+
     render(){
         if (this.state.isRequest) {
             return (
@@ -210,8 +217,7 @@ export default class Praktikum extends React.Component {
             return (
                 <View >
                     <StatusBar backgroundColor="#004dcf" />
-                    <Button title={"Aaa"} onPress={() => AsistenService.showNotif()}  />
-                    {/* <View style={{height : 70}}>
+                    <View style={{height : 70}}>
                         <FlatList
                             horizontal
                             showsHorizontalScrollIndicator={false}
@@ -251,7 +257,7 @@ export default class Praktikum extends React.Component {
                             <ActivityIndicator />
                             <Text>Memuat .. </Text>
                         </View>
-                    </Overlay> */}
+                    </Overlay> 
                 </View>
             )
         }

@@ -8,9 +8,9 @@ public class StorageReact {
     
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    ReactApplicationContext context;
+    Context context;
 
-    public StorageReact (ReactApplicationContext context){
+    public StorageReact (Context context){
         this.context = context;
         sharedPreferences = this.context.getSharedPreferences("Asistens", 0);
         editor = sharedPreferences.edit();
@@ -23,5 +23,9 @@ public class StorageReact {
 
     public String get_value (String key) {
         return sharedPreferences.getString(key, "").toString();
+    }
+
+    public void delete_value() {
+        sharedPreferences.edit().clear().commit();
     }
 }
