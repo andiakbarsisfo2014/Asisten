@@ -1,6 +1,6 @@
 import React from 'react';
 import {Header, ListItem, Icon, Avatar, Button} from 'react-native-elements';
-import {Modal, Dimensions, Image, View, Text, ActivityIndicator, FlatList, TouchableHighlight, PermissionsAndroid, InteractionManager} from 'react-native';
+import {Modal, AsyncStorage, Dimensions, Image, View, Text, ActivityIndicator, FlatList, TouchableHighlight, PermissionsAndroid, InteractionManager} from 'react-native';
 import AsistensService from '../../AsistensService';
 import ConfigAPI from './config/ConfigAPI';
 
@@ -29,7 +29,7 @@ export default class Gambar extends React.Component {
             isVisible : false,
             fileName : null,
             isSending : false,
-            token : navigation.getParam('token')
+            token : ''
         }
     }
 
@@ -97,7 +97,13 @@ export default class Gambar extends React.Component {
     componentDidMount () {
         InteractionManager.runAfterInteractions( () => {
             this.requestPermission();
-            
+        });
+        AsyncStorage.getItem('attrLogin').then((v) => {
+            var res = JSON.parse(v);
+            token = res.token;
+            this.setState({
+                token: res.token,
+            });
         });
     }
     async requestPermission () {

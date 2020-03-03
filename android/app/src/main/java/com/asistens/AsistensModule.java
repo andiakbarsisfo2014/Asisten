@@ -7,6 +7,7 @@ import android.app.Notification;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 // import android.support.v4.app.NotificationCompat;
 import android.app.NotificationManager;
 import androidx.core.app.NotificationCompat;
@@ -96,10 +97,13 @@ public class AsistensModule extends ReactContextBaseJavaModule implements Activi
         this.reactContext.stopService(new Intent(this.reactContext, AsistensService.class));
     }
 
-    // @ReactMethod 
-    // public void sendDataSocket (String eventName, JSONObject) {
-
-    // }
+    @ReactMethod 
+    public void sendDataSocket (String eventName, String dataEmit) {
+        SocketIO mSocketIO = new SocketIO(this.mContext);
+        Socket socket = mSocketIO.configSocket();
+        socket.connect();
+        socket.emit(eventName, dataEmit);
+    }
 
     @ReactMethod
     public void startCounter() {

@@ -6,22 +6,10 @@ import AsistensService from '../../AsistensService';
 AsistensService.startCounter()
 
 class Timer extends React.Component {
-	static navigationOptions = ({ navigation }) => {
-		const { state: { params = {} } } = navigation;
-        return {
-            title : navigation.getParam('praktikum'),
-            headerStyle: {
-                backgroundColor: '#004dcf',
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                fontWeight: 'bold',
-            }
-        };
-    };
     constructor(props) {
       super(props);
 		this.warna = "black";
+		this.labelPraktikum = "Tidak ada praktikum"; 
       this.state = {
       	time : this.props.count.Minutes + " : "+this.props.count.Seconds,
       	isReady : false,
@@ -30,27 +18,7 @@ class Timer extends React.Component {
     }
 	componentDidMount() {
         InteractionManager.runAfterInteractions( () => {
-        	this.setState({isReady : true});
-        // 	var that = this;
-        // 	var duration = 60 * 5;
-		// 	var timer = duration, minutes, seconds;
-        // 	var time = setInterval(function () {
-		//         minutes = parseInt(timer / 60, 10);
-		//         seconds = parseInt(timer % 60, 10);
-
-		//         that.setState({
-		//         	time : minutes + ":" + seconds,
-		//         	color: minutes < 2 ? 'red' : 'black',
-		//         })
-		//         if (minutes < 1 && seconds < 1) {
-		//             clearInterval(time);
-		//             console.log("bangke")
-		//             // timer = duration;
-		//         }
-		//         if (--timer < 0) {
-		//         	timer = duration;
-		//         }
-	   	// 	}, 1000);
+			this.setState({isReady : true});
 		});
 	}
 	render(){
@@ -63,12 +31,17 @@ class Timer extends React.Component {
 				this.warna = "black";
 			}	
 		}
+
+
 		return(
 			<View style={{flex : 1, justifyContent : 'center' , alignItems : 'center' ,flexDirection : 'row'}}>
 				{
 					!this.state.isReady ?
 						<ActivityIndicator /> : 
 						<View style={{alignItems: 'center', justifyContent: 'center'}}>
+							<Text style={{fontWeight: 'bold', fontSize: 20}}>
+								{this.props.count.praktikum}
+							</Text>
 							<Text>Sisa Waktu : </Text> 
 							<Text style={{fontSize: 24, color: this.warna}}>{this.props.count.Minutes + " : "+this.props.count.Seconds}</Text>
 						</View>

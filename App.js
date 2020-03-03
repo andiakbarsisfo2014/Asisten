@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage , ActivityIndicator, Text} from 'react-native';
+import { AsyncStorage , View, ActivityIndicator, Text, NativeEventEmitter, NativeModules} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'; // Version can be specified in package.json
 import {createStackNavigator} from 'react-navigation-stack';
 
@@ -31,6 +31,7 @@ import IndexMhs from './src/screens/Mhs/Index';
 
 
 import Logout from './src/screens/Logout';
+import AsistensService from './AsistensService';
 
 
 let Counter = connect(state => ({count : state.count}))(Timer);
@@ -39,11 +40,7 @@ let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approve
 let LoginPage = connect(state => ({imageLogin : state.imageLogin}))(Login);
 let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
 let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
-let IndexMhsPage = connect(state => ( {imageLogin : state.imageLogin} ))(IndexMhs);
-
-//move To Index
-// let MhsPage = connect(state => ({imageLogin : state.imageLogin}))(Mhs);
-// let QrCodePage = connect(state => ({imageLogin : state.imageLogin}))(QrCode);
+let IndexMhsPage = IndexMhs;
 
 
 
@@ -96,36 +93,65 @@ const AppStack = createStackNavigator({
     Setting : {
         screen : Setting,
     },
-    Timer : {
-        screen : ({navigation, screenProps}) => {
-            return <Counter />
-        },
-        navigationOptions : {
-            header : null
-        }
-    }
+    
 }, {initialRouteName : 'Prak'});
 
 const Tab = createBottomTabNavigator(
     {
-        Home : {screen : AppStack},
+        Home : {
+            screen : AppStack,
+            navigationOptions : ({navigation}) => ({
+                tabBarIcon : ({ focused, horizontal, tintColor }) => {
+                    if (focused) {
+                        return (
+                            <View style={{borderColor: '#fff', width: 60, height: 60, justifyContent: 'center', alignItems: 'center', marginBottom: 27, borderWidth: 4, backgroundColor: focused ? '#fff' : tintColor, borderRadius: 100}}>
+                                <View style={{width: 55, height: 55, borderWidth: 4, borderColor: '#004dcf', backgroundColor: focused ? '#fff' : tintColor, padding: 10, justifyContent: 'center', borderRadius: 100}}>
+                                    <Icon type="font-awesome" color={ focused ? tintColor : '#747474'} name="home" />
+                                </View>
+                            </View>
+                        )
+                    } else {
+                        return (<Icon type="font-awesome" color="#fff" name="home" />)
+                    }
+                }
+            })
+        },
         Setting : {
             screen  : BootMenu,
+            navigationOptions : ({navigation}) => ({
+                tabBarIcon : ({ focused, horizontal, tintColor }) => {
+                    if (focused) {
+                        return (
+                            <View style={{borderColor: '#fff', width: 60, height: 60, justifyContent: 'center', alignItems: 'center', marginBottom: 27, borderWidth: 4, backgroundColor: focused ? '#fff' : tintColor, borderRadius: 100}}>
+                                <View style={{width: 55, height: 55, borderWidth: 4, borderColor: '#004dcf', backgroundColor: focused ? '#fff' : tintColor, padding: 10, justifyContent: 'center', borderRadius: 100}}>
+                                    <Icon type="font-awesome" color={ focused ? tintColor : '#747474'} name="gear" />
+                                </View>
+                            </View>
+                        )
+                    } else {
+                        return (<Icon type="font-awesome" color="#fff" name="gear" />)
+                    }
+                }
+            })
         }
     }, 
     {
-        defaultNavigationOptions : ({navigation}) => ({
-            tabBarIcon : ({ focused, tintColor }) => {
-                const { routeName } = navigation.state;
-                let iconName;
-                if (routeName === 'Home') {
-                    iconName = focused ?  'home' : 'home';
-                } else if (routeName === 'Setting') {
-                    iconName = focused ? 'cogs' : 'cogs';
-                }
-                return <Icon name={iconName} type='font-awesome' size={25} color={tintColor} />;
-            }
-        }),
+        tabBarOptions : {
+            style: {
+                backgroundColor: '#004dcf',
+            },
+            labelStyle : {
+                fontSize : 13,
+                fontWeight : "bold",
+                color: '#fff'
+            },
+            activeTabStyle: {
+                backgroundColor: 'white',
+                // borderBottomWidth: 4,
+                // borderColor: '#6C1D7C'
+              }
+        },
+        
     }
 )
 
@@ -145,10 +171,17 @@ class CheckAuth extends React.Component{
         this._storageSession();
     }
 
+    componentDidMount () {
+        const eventEmitter = new NativeEventEmitter(NativeModules.ToastExample);
+        eventEmitter.addListener('notification-press', (event) => {
+            this.props.navigation.navigate('Timer', {praktikum: event.praktikum})
+        });
+    }
+
     _storageSession = async () => {
         await AsyncStorage.multiGet(['isLogin', 'attrLogin']).then((value) => {
             if (this.props.screenProps.fromNotif) {
-                this.props.navigation.navigate('Timer')
+                this.props.navigation.navigate('Timer', {praktikum: this.props.screenProps.praktikum})
             } else {
                 let attrLogin = JSON.parse(value[1][1]); 
                 if (attrLogin) {

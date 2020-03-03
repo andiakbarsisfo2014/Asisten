@@ -44,7 +44,7 @@ export default class Absen extends React.Component {
 
     generateText = (item) => {
         if(item.acc == 0 && item.file != null) {
-            return "Waiting"
+            return "Waiting - "
         }
         else if (item.acc == 0 && item.file == null) {
             return "Empty"
@@ -64,7 +64,8 @@ export default class Absen extends React.Component {
                     <Text style={{fontWeight : 'bold', color : this.generateColor(item)}}>{this.generateText(item)}</Text>
                     {
                         item.file == null ? null : <TouchableOpacity onPress={ () => navigation.navigate('Pdf', {rowFile : index + 1, fileName : ConfigAPI.img_url + item.file}) }>
-                        <Text> - Review </Text>
+                        <Icon color="#517fa4" name="ios-eye" type="ionicon" /> 
+
                     </TouchableOpacity> 
                     }
                 </View>
@@ -86,14 +87,14 @@ export default class Absen extends React.Component {
 
     myTitle = (index, item, navigation) => {
         return (
-            <Text style={{fontWeight : 'bold', fontSize : 17}}>Pertemuan Ke. {index + 1}</Text>
+            <Text style={{fontWeight : 'bold', fontSize : 17, color: '#517fa4'}}>Pertemuan Ke. {index + 1}</Text>
         )
     }
 
     myListItem = (index, item, navigation) => {
         return (
             <ListItem
-                leftIcon = {<Icon name="check-circle" color="#004dcf" type="fon-awesome" />}
+                leftIcon = {<Icon name="ios-archive" color="#517fa4" type="ionicon" />}
                 title={this.myTitle(index, item, navigation)}
                 subtitle={ this.mySubtitle(index, item, navigation) }
                 rightElement = {this.myBadge(index, item, navigation)}

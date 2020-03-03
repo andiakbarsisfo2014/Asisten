@@ -146,6 +146,7 @@ public class AsistensService extends Service {
                         generateNotif(data.getString("praktikum"));
                         Intent intent = new Intent(mContext, ConterService.class);
                         intent.putExtra("time", data.getString("time"));
+                        intent.putExtra("praktikum", data.getString("praktikum"));
                         mContext.stopService(new Intent(mContext, ConterService.class));
                         mContext.startService(intent);
                     }

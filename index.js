@@ -20,6 +20,7 @@ function counter(state, action) {
         return {
             Minutes : 0,
             Seconds : 0,
+            praktikum: "Tidak ada praktikum"
         }
     }
     if (action.type == "kirim") {
@@ -28,12 +29,14 @@ function counter(state, action) {
         return {
             Minutes : 0,
             Seconds : 0,
+            praktikum: "Tidak ada praktikum"
         } 
     }
     
 }
 
 function tryForLaporan(state, action) {
+    
     if (typeof state === 'undefined') {
         return [];
     }
@@ -51,6 +54,7 @@ function tryForLaporan(state, action) {
             return state;
         }
         else{
+            console.log('tryForLaporan');
             return 0
         }
     }
@@ -66,6 +70,7 @@ async function mainUseless() {
             }
         }
     else{
+        
         return null;
     }
 }
@@ -92,18 +97,23 @@ function imageLogin(state, action) {
                 }
             };
         }
-        else {
-            var json = mainUseless();
-            return json;
+        else{
+            return {
+                _55 : {
+                    img : action.data,
+                    name : state['_55'].name
+                }
+            };
         }
+
     }
 }
 
 function dataNilaiSiswa(state, action) {
     if (typeof state === 'undefined') {
-        return null;
+        return null
     }
-    else{
+    else {
         return {
             data : action.data
         }
@@ -119,16 +129,16 @@ function fromNotif(state, action) {
     }
 }
 
-let store = createStore(combineReducers({ count: counter, dataLaporan : tryForLaporan, imageLogin :  imageLogin, dataNilaiSiswa : dataNilaiSiswa, fromNotif : fromNotif}));
-let CountContainer = connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin, dataNilaiSiswa : state.dataNilaiSiswa, fromNotif : state.fromNotif }))(App);
-
-const AsistenHeadless = async (data) => {
-};
-
-
-function publicSocket(state, action) {
-    return null;
-}
+let store = createStore(combineReducers(
+    { 
+        count: counter,
+        dataLaporan: tryForLaporan, 
+        imageLogin: imageLogin, 
+        dataNilaiSiswa: dataNilaiSiswa, 
+        fromNotif: fromNotif
+    }
+));
+let CountContainer = App; //connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin, dataNilaiSiswa : state.dataNilaiSiswa, fromNotif : state.fromNotif }))(App);
 
 const ConterEvent = async (data) => {
     store.dispatch({type : 'kirim', value : data});

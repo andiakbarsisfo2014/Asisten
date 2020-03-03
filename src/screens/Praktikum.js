@@ -199,7 +199,7 @@ class Main extends React.Component {
     render (){
         if (this.state.isLoading) {
             return(
-                <View style={{flex : 1, flexDirection : 'column'}}>
+                <View style={{flex : 1, flexDirection : 'column', justifyContent: 'center', alignItems: 'center'}}>
                     <StatusBar backgroundColor="#004dcf" />
                     <View style={{flex : 1, justifyContent : 'center', alignItems : 'center'}}>
                         <ActivityIndicator size={35} color="grey" />
@@ -213,14 +213,20 @@ class Main extends React.Component {
                     <StatusBar backgroundColor="#004dcf" />
                     { this.state.loadingList ? <ActivityIndicator /> : this.state.showError ? this.error() : <FlatList 
                         data ={this.state.matkul}
+                        ListHeaderComponent = {
+                            <View style={{ paddingLeft: 16, height : 50, width: '100%', justifyContent: 'center'}}>
+                                <Text style={{fontWeight: 'bold', color: '#517fa4'}}>Daftar Praktikum : </Text>
+                            </View>
+                        }
                         refreshControl = {
                             <RefreshControl colors={['#0E9DDD','#0B7EB1']} refreshing={this.state.isRefresh} onRefresh={this.refresh} />
                           }
                         keyExtractor={(item, index) => index.toString()}
                         renderItem = {({item}) => (
                             <ListItem 
-                                leftIcon={{name : 'cogs', type : 'font-awesome'}}
+                                leftIcon={{name : 'ios-book', type : 'ionicon'}}
                                 title={item.title}
+                                titleStyle={{fontWeight: 'bold', color: '#517fa4'}}
                                 subtitle={'Kelas : '+item.kelas}
                                 onPress={() => this.absen(item.key, item.title, item.kelas)}
                                 bottomDivider
@@ -230,11 +236,21 @@ class Main extends React.Component {
                     <Modal
                         animationType="fade"
                         transparent={true}
+                        style={{backgroundColor: 'yellow'}}
+                        visible={this.state.modalVisible}
+                    >
+                        <View style={{flex: 1, backgroundColor: 'rgba(52, 52, 52, 0.8)'}}>
+
+                        </View>
+                    </Modal>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
                         visible={this.state.modalVisible}
                         onRequestClose={() => {
                             this.setState({modalVisible : false})
                         }}>
-                        <View style={{backgroundColor : 'rgba(52, 52, 52, 0.7)', justifyContent :'center', alignItems : 'center', flex : 1, flexDirection : 'row'}}>
+                        <View style={{justifyContent :'center', alignItems : 'center', flex : 1, flexDirection : 'row'}}>
                             <View style={{backgroundColor : '#fff', height : 415, width : 300, borderRadius : 5}}>
                                 <View style={{flex : 1, flexDirection : 'column', padding : 15}}>
                                     <View style={{height : 50, justifyContent : 'center', width : '100%',  borderBottomWidth : 0.5, borderBottomColor : '#464645'}}>

@@ -199,7 +199,7 @@ class Item extends React.PureComponent {
         return(
             <View style={css.box}>
                 <View style={css.labelLaporan}>
-                    <Text>Laporan Ke.{this.props.items.row} - { this.props.items.name != undefined && this.props.items.acc == 0 ? 'Wait' : this.props.items.acc == 2 ? 'Reject' : this.props.items.name != undefined && this.props.items.acc == 1 ? 'Acc' : 'Kosong' }</Text>
+                    <Text style={{fontWeight: 'bold'}}>Laporan Ke.{this.props.items.row} - { this.props.items.name != undefined && this.props.items.acc == 0 ? 'Wait' : this.props.items.acc == 2 ? 'Reject' : this.props.items.name != undefined && this.props.items.acc == 1 ? 'Acc' : 'Kosong' }</Text>
                 </View>
                 <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-around'}}>
                     <TouchableOpacity style={css.bundar} onPress={() => this.readFile(this.props.items.name)}>

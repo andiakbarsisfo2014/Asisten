@@ -1,10 +1,13 @@
 import React from 'react';
 import { Overlay } from 'react-native-elements'
-import {NativeEventEmitter, NativeModules, Text, ToastAndroid, View, RefreshControl, TouchableHighlight, Dimensions, ActivityIndicator, FlatList, StatusBar, AsyncStorage, InteractionManager } from 'react-native';
+import {Dimensions, NativeEventEmitter, NativeModules, Text, ToastAndroid, View, RefreshControl, TouchableHighlight, ActivityIndicator, FlatList, StatusBar, AsyncStorage, InteractionManager } from 'react-native';
 import {ListItem, Button} from 'react-native-elements';
 import {Icon} from 'react-native-elements';
 import ConfigAPI from '../config/ConfigAPI';
 import AsistensService from '../../../AsistensService';
+
+const window = Dimensions.get('window');
+const lebar = window.width / 3;
 
 class Template extends React.PureComponent {
     constructor(props) {
@@ -13,8 +16,8 @@ class Template extends React.PureComponent {
             isActive : false,
         }
     }
+
     set_active_view () {
-        // alert()
         this.props.set_active_view(this.props.index);
     }
 
@@ -23,17 +26,17 @@ class Template extends React.PureComponent {
             <TouchableHighlight underlayColor="#fff" style={{
                 flex : 1, 
                 flexDirection : 'row', 
-                // backgroundColor : '#747474',
-                borderColor : this.props.index == this.props.active ? '#004dcf' : '#747474',
-                borderWidth : 1,
                 margin : 10,
-                width : (Dimensions.get('window').width / 6), height : 50,
                 justifyContent : 'center',
-                alignItems : 'center', borderRadius : 5
+                alignItems : 'center', 
             }} onPress={ () => this.set_active_view()}>
-                <View>
-                <Icon name={this.props.item.icon} type="font-awesome" color={this.props.index == this.props.active ? '#004dcf' : '#747474'} />
-                    <Text style={{color : this.props.index == this.props.active ? '#004dcf' : '#747474'}}>{this.props.item.title}</Text>
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{borderColor : this.props.index == this.props.active ? '#004dcf' : '#517fa4', borderWidth: 3, borderRadius: 100, padding: 10, width: 50, backgroundColor: this.props.index == this.props.active ? '#004dcf' : '#fff'}}>
+                        <Icon name={this.props.item.icon} type="font-awesome" color={this.props.index == this.props.active ? '#fff' : '#517fa4'} />
+                    </View>
+                    <View>
+                        <Text style={{fontWeight: 'bold', color : '#517fa4'}}>{this.props.item.title}</Text>
+                    </View>
                 </View>
             </TouchableHighlight>
         )
@@ -164,6 +167,7 @@ export default class Praktikum extends React.Component {
                         let gotoPage = this.state.menu[this.state.active].name;
                         this.props.navigation.navigate(gotoPage, {kode_kelas : kode_kelas});  
                     }).catch( (error) => {
+                        console.log(error);
                         this.setState({
                             isRequestNilai : false,
                         });
@@ -217,21 +221,32 @@ export default class Praktikum extends React.Component {
             return (
                 <View >
                     <StatusBar backgroundColor="#004dcf" />
-                    <View style={{height : 70}}>
-                        <FlatList
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            showsVerticalScrollIndicator={false}
-                            data = {this.state.menu}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem = { ({item, index}) => (
-                                <Template item={item} index={index} set_active_view={this.set_active_view} active={this.state.active} />
-                            )}
-                        />
-                    </View>
                     
-                    <View style={{borderTopWidth : 1, borderTopColor : '#747474'}}>
+                    
+                    <View>
                         <FlatList
+                            ListHeaderComponent = {
+                                <View style={{height : 270}}>
+                                    <View style={{ paddingLeft: 16, height : 50, width: '100%', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', color: '#517fa4'}}>Kategori Nilai : </Text>
+                                    </View>
+                                    <View style={{paddingLeft: 6}}>
+                                        <FlatList
+                                            numColumns={3}
+                                            showsHorizontalScrollIndicator={false}
+                                            showsVerticalScrollIndicator={false}
+                                            data = {this.state.menu}
+                                            keyExtractor={(item, index) => index.toString()}
+                                            renderItem = { ({item, index}) => (
+                                                <Template item={item} index={index} set_active_view={this.set_active_view} active={this.state.active} />
+                                            )}
+                                        />
+                                    </View>
+                                    <View style={{ paddingLeft: 16, height : 50, width: '100%', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', color: '#517fa4'}}>Praktikum : </Text>
+                                    </View>
+                                </View>
+                            }
                             data = {this.state.dataSource}
                             keyExtractor={(item, index) => index.toString()}
                             refreshControl = {
@@ -239,8 +254,9 @@ export default class Praktikum extends React.Component {
                             }
                             renderItem = { ({item}) => (
                                 <ListItem 
-                                    leftIcon={{name : 'cogs', type : 'font-awesome'}}
+                                    leftIcon={{name : 'ios-book', type : 'ionicon'}}
                                     title={item.judul}
+                                    titleStyle={{color: '#517fa4', fontWeight: 'bold'}}
                                     subtitle={item.asisten_1.name+' - '+item.asisten_2.name}
                                     onPress={() => this.checkNilai(item.id, item.judul)}
                                     bottomDivider

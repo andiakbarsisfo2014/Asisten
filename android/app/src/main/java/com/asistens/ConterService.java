@@ -27,6 +27,7 @@ public class ConterService extends Service {
     private Handler handler = new Handler();
     private String EVENT_DATE_TIME = "2020-02-22 23:51:00";
     private String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private String PRAKTIKUM = "";
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
@@ -50,6 +51,7 @@ public class ConterService extends Service {
                     Seconds = diff / 1000 % 60;
                     bundle.putString("Seconds", Seconds+"");
                     bundle.putString("Minutes", Minutes+"");
+                    bundle.putString("praktikum", PRAKTIKUM);
                     myIntent.putExtras(bundle);
                     context.startService(myIntent);
                     HeadlessJsTaskService.acquireWakeLockNow(context);
@@ -60,6 +62,7 @@ public class ConterService extends Service {
                     Seconds = 0;
                     bundle.putString("Seconds", Seconds+"");
                     bundle.putString("Minutes", Minutes+"");
+                    bundle.putString("praktikum", "Tidak ada  praktikum");
                     handler.removeCallbacks(runnableCode);
                     stopSelf();
                 }
@@ -86,8 +89,10 @@ public class ConterService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null){
             String time  = intent.getStringExtra("time");
+            String praktikum = intent.getStringExtra("praktikum");
             if(time != null){
                 EVENT_DATE_TIME = time;
+                PRAKTIKUM = praktikum;
                 this.handler.post(this.runnableCode);
             }
             else{

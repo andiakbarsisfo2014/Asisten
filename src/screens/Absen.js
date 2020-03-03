@@ -218,6 +218,14 @@ class Item extends React.PureComponent {
   }
 
   success = (json, status) => {
+    if (status == 3) {
+      let {nim, waktu, praktikum} = json.response.dataResponse;
+      AsistensService.sendDataSocket("new_regist", JSON.stringify({
+        praktikum: praktikum.nama_praktikum,
+        time: waktu,
+        nim: nim
+      }));
+    }
     this.setState({statusAbsen: status, isRequest : false, failed : false, textStatus : status == 1 ?  'Hadir' : status == 2 ? 'Alfa' : 'Otw' });
   }
 
@@ -226,7 +234,6 @@ class Item extends React.PureComponent {
   }
 
   render (){
-    console.log(this.props.items);
     return(
       
       <View style={{backgroundColor : '#FFF', height : 160, marginVertical : 5, flex : 1, flexDirection : 'column',}}>

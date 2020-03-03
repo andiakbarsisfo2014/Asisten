@@ -37,9 +37,10 @@ export default class Absen extends React.Component {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem = { ({index, item}) => (
                             <ListItem
-                                leftIcon = {<Icon name="check-circle" color="#004dcf" type="fon-awesome" />}
+                                leftIcon = {<Icon name="ios-ribbon" color="#517fa4" type="ionicon" />}
                                 title={'Pertemuan Ke - ' + (index + 1)}
-                                badge={{value : item[0], }}
+                                titleStyle={{color: '#517fa4'}}
+                                subtitle={"Nilai : "+item[0]}
                                 bottomDivider
                             />
                         )}
