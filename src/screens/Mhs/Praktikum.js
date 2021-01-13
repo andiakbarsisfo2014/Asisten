@@ -85,11 +85,11 @@ export default class Praktikum extends React.Component {
                     name : 'Tugas',
                     icon : 'building'
                 },
-                {
-                    title : 'Quis',
-                    name : 'Quis',
-                    icon : 'globe'
-                },
+                // {
+                //     title : 'Quis',
+                //     name : 'Quis',
+                //     icon : 'globe'
+                // },
                 {
                     title : 'Laporan',
                     name : 'Laporan',

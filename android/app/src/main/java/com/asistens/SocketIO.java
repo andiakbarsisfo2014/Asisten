@@ -11,8 +11,8 @@ import org.json.JSONObject;
 
 public class SocketIO {
     private static final String protocol = "http:";
-    private static final String ADDRESS = "192.168.88.92/web-asisten";
-    private static final String SOCKET_ADDRESS = "192.168.88.92";
+    private static final String ADDRESS = "192.168.137.1/web-asisten";
+    private static final String SOCKET_ADDRESS = "192.168.137.1";
     private static final String SOCKET_PORT = "3000";
     private static final String comeFrom = "mobile";
     StorageReact storageReact;

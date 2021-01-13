@@ -203,7 +203,7 @@ export default class Setting extends React.Component {
                     <View style={{flex:1, flexDirection: 'column-reverse'}}>
                         <View style={{height:280, backgroundColor: '#fff', borderTopLeftRadius: 5, borderTopRightRadius: 5}}>
                             <View style={{marginTop: 15, marginLeft: 20}}>
-                                <Text style={{fontWeight: 'bold', fontSize: 17}}>Masukkan Kata Sandi</Text>
+                                <Text style={{fontWeight: 'bold', fontSize: 17}}>Masukan Kata Sandi</Text>
                             </View>
                             <View style={{marginTop: 15, marginLeft: 15, marginRight: 15}}>
                                 <Input onChange={(event) => this.setState({password: event.nativeEvent.text})} secureTextEntry={true} placeholder='Sandi' />
@@ -243,7 +243,7 @@ export default class Setting extends React.Component {
                     <View style={{flex:1, flexDirection: 'column-reverse'}}>
                         <View style={{height:180, backgroundColor: '#fff', borderTopLeftRadius: 5, borderTopRightRadius: 5}}>
                             <View style={{marginTop: 15, marginLeft: 20}}>
-                                <Text style={{fontWeight: 'bold', fontSize: 17}}>Masukkan Kata Sandi</Text>
+                                <Text style={{fontWeight: 'bold', fontSize: 17}}>Tentukan Pertemuan</Text>
                             </View>
                             <View style={{marginTop: 15, marginLeft: 15, marginRight: 15}}>
                                 <Input keyboardType={'numeric'} onSubmitEditing={() => this.simpan_pertemuan()} returnKeyType='send' onChange={(event) => this.setState({pertemuan: event.nativeEvent.text})} placeholder='Pertemuan' />

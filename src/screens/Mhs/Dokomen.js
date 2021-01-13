@@ -28,16 +28,28 @@ export default class Dokumen extends React.Component {
 
     componentDidMount () {
         this.props.navigation.setParams({uploadFile : this.uploadFile})
-        this.requestPermission();
+        InteractionManager.runAfterInteractions(() => {
+            this.requestPermission();
+        }) 
     }
 
     uploadFile = () => {
     }
 
     async requestPermission () {
-        Asisten.getMyListPdf( (file) => {
-            this.setState({fileName : JSON.parse(file)})
-        })
+        
+        try {
+            const granted = await PermissionsAndroid.request( PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                Asisten.getMyListPdf( (file) => {
+                    this.setState({fileName : JSON.parse(file)})
+                });
+            } else {
+                alert('Gagal');
+            }
+        } catch (err) {
+            console.warn(err);
+        }
     }
 
     repartName = (fileName) => {

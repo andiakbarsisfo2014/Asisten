@@ -268,24 +268,24 @@ class Main extends React.Component {
                                             <Text style={css.label}>Nilai Respon</Text>
                                         </View>
                                     </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => this.mulaiProses('quis')} underlayColor="#E8E8E8"  style={css.container}>
+                                    {/* <TouchableHighlight onPress={() => this.mulaiProses('quis')} underlayColor="#E8E8E8"  style={css.container}>
                                         <View style={css.btn}>
                                             <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
                                             <Text style={css.label}>Nilai Quis</Text>
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableHighlight> */}
                                     <TouchableHighlight onPress={() => this.mulaiProses('tugas')} underlayColor="#E8E8E8"  style={css.container}>
                                         <View style={css.btn}>
                                             <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
                                             <Text style={css.label}>Nilai Tugas</Text>
                                         </View>
                                     </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => this.mulaiProses('harian')} underlayColor="#E8E8E8"  style={css.container}>
+                                    {/* <TouchableHighlight onPress={() => this.mulaiProses('harian')} underlayColor="#E8E8E8"  style={css.container}>
                                         <View style={css.btn}>
                                             <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />
                                             <Text style={css.label}>Nilai Harian</Text>
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableHighlight> */}
                                     <TouchableHighlight onPress={() => this.mulaiProses('absen')} underlayColor="#E8E8E8"  style={css.container}>
                                         <View style={css.btn}>
                                             <Icon name="check-square" size={30} color="#5BAF5F"  type="font-awesome" />

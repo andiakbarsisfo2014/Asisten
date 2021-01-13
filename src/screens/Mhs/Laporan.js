@@ -63,7 +63,7 @@ export default class Absen extends React.Component {
                 <View style={{flex : 1, flexDirection : 'row'}}>
                     <Text style={{fontWeight : 'bold', color : this.generateColor(item)}}>{this.generateText(item)}</Text>
                     {
-                        item.file == null ? null : <TouchableOpacity onPress={ () => navigation.navigate('Pdf', {rowFile : index + 1, fileName : ConfigAPI.img_url + item.file}) }>
+                        item.file == null ? null : <TouchableOpacity onPress={ () => navigation.navigate('Pdf', {rowFile : index + 1, fileName : ConfigAPI.img_url+'/public/'+ item.file}) }>
                         <Icon color="#517fa4" name="ios-eye" type="ionicon" /> 
 
                     </TouchableOpacity> 

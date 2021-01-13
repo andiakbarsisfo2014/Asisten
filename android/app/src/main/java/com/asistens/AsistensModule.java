@@ -27,6 +27,7 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 import android.database.Cursor;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import android.graphics.Bitmap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -126,10 +127,10 @@ public class AsistensModule extends ReactContextBaseJavaModule implements Activi
         final String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media._ID};
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
         Cursor imagecursor = reactContext.getContentResolver().query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, 
-            columns, 
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            columns,
             null,
-            null, 
+            null,
             orderBy + " DESC"
         );
         
@@ -138,6 +139,37 @@ public class AsistensModule extends ReactContextBaseJavaModule implements Activi
                 JSONObject fileNames = new JSONObject();
                 imagecursor.moveToPosition(i);
                 int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Images.Media.DATA);//get column index
+                fileNames.put("name", imagecursor.getString(dataColumnIndex));
+                arrFileName.put(fileNames);
+                Log.e("Useless-Dev", fileNames.toString());
+            }
+            allFile.put("files", arrFileName);
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        fileCallBack.invoke(allFile.toString());
+    }
+
+    @ReactMethod
+    public void getMyListPdf(Callback fileCallBack) {
+        JSONObject allFile = new JSONObject();
+        JSONArray arrFileName = new JSONArray();
+        final String[] columns = {MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns._ID};
+        String mimeType = "application/pdf";
+        String whereClause = MediaStore.Files.FileColumns.MIME_TYPE + " IN ('" + mimeType + "')";
+        Cursor imagecursor = reactContext.getContentResolver().query(
+             MediaStore.Files.getContentUri("external"),
+            columns,
+            whereClause,
+            null,
+            null
+        );
+        
+        try {
+            for (int i = 0; i < imagecursor.getCount(); i++) {
+                JSONObject fileNames = new JSONObject();
+                imagecursor.moveToPosition(i);
+                int dataColumnIndex = imagecursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
                 fileNames.put("name", imagecursor.getString(dataColumnIndex));
                 arrFileName.put(fileNames);
                 Log.e("Useless-Dev", fileNames.toString());

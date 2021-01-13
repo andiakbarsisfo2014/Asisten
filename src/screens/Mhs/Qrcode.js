@@ -39,7 +39,7 @@ export default class Qrcode extends React.Component {
                 this.setState({
                     isLoading : false,
                     textCode : response.response.data
-                })
+                });
             }).catch( (error) => {
                 console.log(error)
             })
