@@ -44,11 +44,6 @@ let IndexMhsPage = IndexMhs;
 
 
 
-
-
-
-
-
 const BootMenu = createStackNavigator({
     Setting : {screen : SettingPage},
     Useless : {
@@ -58,6 +53,42 @@ const BootMenu = createStackNavigator({
         screen : GambarPage,
     },
 }, {initialRouteName : 'Setting'})
+
+// const FadeTrans = (position, index) => {
+//     const screenRange = [index-1, index]
+//     const  output = [0, 1]
+//     const transition = position.interpolate({
+//         inputRange : screenRange,
+//         outputRange: output,
+//     });
+//     return {
+//         opacity: transition
+//     }
+// }
+
+// const bottomAnim = (position, index, width) => {
+//     const screenRange = [index-1, index]
+//     const  output = [width, 0]
+//     const transition = position.interpolate({
+//         inputRange : screenRange,
+//         outputRange: output,
+//     });
+//     return {
+//         transform: [{translateX: transition}]
+//     }
+// }
+
+// const NavOption = () => {
+//     return {
+//         screenInterpolator : (props) => {
+//             const { layout, position, scene } = props;
+//             const { index } = scene;
+//             // return FadeTrans(position, index)
+//             const width = layout.initWidth;
+//             return bottomAnim(position, index, width);
+//         }
+//     }
+// }
 
 const AppStack = createStackNavigator({
     Home: {
@@ -93,8 +124,14 @@ const AppStack = createStackNavigator({
     Setting : {
         screen : Setting,
     },
+    GambarPage: {
+        screen: GambarPage,
+    }
     
-}, {initialRouteName : 'Prak'});
+}, {
+    initialRouteName : 'Prak', 
+    // transitionConfig: NavOption
+});
 
 const Tab = createBottomTabNavigator(
     {
