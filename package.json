@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
     "@react-navigation/material-top-tabs": "5.0.1",
     "expo-permissions": "^7.0.0",
     "react": "16.9.0",
