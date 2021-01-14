@@ -20,18 +20,18 @@ import Dokumen from './Dokomen';
 import Gambar from '../Gambar';
 import Timer from '../Timer';
 
-let Counter = connect(state => ({count : state.count}))(Timer);
+let Counter = connect(state => (state.reduxAsisten))(Timer);
 
-let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
-const Absen_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Absen);
-const Respon_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Respon);
-const Tp_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Tp);
-const Tugas_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Tugas);
-const Quis_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Quis);
-const Laporan_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Laporan);
-const Praktikum_ = connect(state => ({dataNilaiSiswa : state.nilaiSiswa}))(Praktikum);
-const Dokumen_ = connect(state => ({dataNilaiSiswa : state.dataNilaiSiswa}))(Dokumen);
-const Profil_ = connect(state => ({imageLogin: state.imageLogin}))(Profil);
+let GambarPage = connect(state => ({imageLogin : state.reduxAsisten}))(Gambar);
+const Absen_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Absen);
+const Respon_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Respon);
+const Tp_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Tp);
+const Tugas_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Tugas);
+const Quis_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Quis);
+const Laporan_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Laporan);
+const Praktikum_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Praktikum);
+const Dokumen_ = connect(state => ({dataNilaiSiswa : state.reduxAsisten}))(Dokumen);
+const Profil_ = connect(state => ({reduxAsisten: state.reduxAsisten}))(Profil);
 
 const css = StyleSheet.create ({
     rightComponent : {
@@ -146,12 +146,12 @@ const MhsMenu = createBottomTabNavigator(
                         return (
                             <View style={{borderColor: '#fff', width: 60, height: 60, justifyContent: 'center', alignItems: 'center', marginBottom: 27, borderWidth: 4, backgroundColor: focused ? '#fff' : tintColor, borderRadius: 100}}>
                                 <View style={{width: 55, height: 55, borderWidth: 4, borderColor: '#004dcf', backgroundColor: focused ? '#fff' : tintColor, padding: 10, justifyContent: 'center', borderRadius: 100}}>
-                                    <Icon type="ionicon" color={ focused ? tintColor : '#747474'} name="ios-user" />
+                                    <Icon type="font-awesome" color={ focused ? tintColor : '#747474'} name="address-card" />
                                 </View>
                             </View>
                         )
                     } else {
-                        return (<Icon type="font-awesome" color="#fff" name="home" />)
+                        return (<Icon type="font-awesome" color="#fff" name="address-card" />)
                     }
                 }
             })
@@ -165,12 +165,12 @@ const MhsMenu = createBottomTabNavigator(
                         return (
                             <View style={{borderColor: '#fff', width: 60, height: 60, justifyContent: 'center', alignItems: 'center', marginBottom: 27, borderWidth: 4, backgroundColor: focused ? '#fff' : tintColor, borderRadius: 100}}>
                                 <View style={{width: 55, height: 55, borderWidth: 4, borderColor: '#004dcf', backgroundColor: focused ? '#fff' : tintColor, padding: 10, justifyContent: 'center', borderRadius: 100}}>
-                                    <Icon type="ionicon" color={ focused ? tintColor : '#747474'} name="ios-clock" />
+                                    <Icon color={ focused ? tintColor : '#747474'} name="rowing" />
                                 </View>
                             </View>
                         )
                     } else {
-                        return (<Icon type="ionicon" color="#fff" name="ios-clock" />)
+                        return (<Icon color="#fff" name="rowing" />)
                     }
                 }
             })

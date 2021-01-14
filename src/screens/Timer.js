@@ -22,7 +22,6 @@ class Timer extends React.Component {
 		});
 	}
 	render(){
-		
 		if (this.props.count.Minutes < 2) {
 			
 			if (this.warna == "black") {

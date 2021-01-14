@@ -135,13 +135,13 @@ export default class Setting extends React.Component {
                     <View style={styles.header}></View>
                     <Image style={styles.avatar} source={{uri: this.props.imageLogin._55.img != undefined ? ConfigApi.img_url+'/public'+this.props.imageLogin._55.img :  'https://bootdey.com/img/Content/avatar/avatar6.png'}} />
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('GambarPage')} style={{backgroundColor: '#fff', borderColor: '#517fa4', borderWidth: 2, borderRadius: 100,  height: 50, width: 50, marginTop: 25, marginLeft: '55%'}}>
-                        <Icon name="ios-camera" size={40} type="ionicon" color='#517fa4'  />
+                        <Icon name="image" size={40} color='#517fa4'  />
                     </TouchableOpacity>
                     <View style={styles.boxStyle}>
                         <View style={styles.boxLabel}>
                             <View style={styles.containerBox}>
                                 <View style={styles.boxIcon}>
-                                    <Icon name='ios-contact' type='ionicon' color='#517fa4' size={40} />
+                                    <Icon name='user' type="font-awesome" color='#517fa4' size={40} />
                                 </View>
                                 <View style={styles.boxText}>
                                     <Text style={styles.caption}>Nama</Text>
@@ -152,7 +152,7 @@ export default class Setting extends React.Component {
                         <View style={styles.boxLabel}>
                             <View style={styles.containerBox}>
                                 <View style={styles.boxIcon}>
-                                    <Icon name='ios-lock' type='ionicon' color='#517fa4' size={40} />
+                                    <Icon name='lock' color='#517fa4' size={40} />
                                 </View>
                                 <View style={styles.boxText}>
                                     <Text style={styles.caption}>Kata Sandi</Text>

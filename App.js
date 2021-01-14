@@ -35,11 +35,11 @@ import AsistensService from './AsistensService';
 
 
 let Counter = connect(state => ({count : state.count}))(Timer);
-let ItemReport = connect(state => ({dataLaporan : state.dataLaporan}))(ItemLaporan);
-let ApproverPage = connect(state => ({dataLaporan : state.dataLaporan}))(Approver);
-let LoginPage = connect(state => ({imageLogin : state.imageLogin}))(Login);
-let SettingPage = connect(state => ({imageLogin : state.imageLogin}))(Setting);
-let GambarPage = connect(state => ({imageLogin : state.imageLogin}))(Gambar);
+let ItemReport = connect(state => ({dataLaporan : state.reduxAsisten}))(ItemLaporan);
+let ApproverPage = connect(state => ({dataLaporan : state.reduxAsisten}))(Approver);
+let LoginPage = connect(state => ({imageLogin : state.reduxAsisten}))(Login);
+let SettingPage = connect(state => (state.reduxAsisten))(Setting);
+let GambarPage = connect(state => ({imageLogin : state.reduxAsisten}))(Gambar);
 let IndexMhsPage = IndexMhs;
 
 
