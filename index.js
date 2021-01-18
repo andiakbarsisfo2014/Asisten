@@ -13,52 +13,36 @@ import { createStore, combineReducers } from 'redux';
 
 import Akbar from './Akbar';
 
-function counter(state, action) {
-    console.log(action.value);
 
-    if (typeof state === 'undefined') {
-        return {
-            Minutes : 0,
-            Seconds : 0,
-            praktikum: "Tidak ada praktikum"
-        }
-    }
-    if (action.type == "kirim") {
-        return action.value;
-    } else {
-        return {
-            Minutes : 0,
-            Seconds : 0,
-            praktikum: "Tidak ada praktikum"
-        } 
-    }
-    
-}
 
-function tryForLaporan(state, action) {
+// function tryForLaporan(state, action) {
     
-    if (typeof state === 'undefined') {
-        return [];
-    }
-    else{
-        if (action.type == 'initValue') {
-            return action.data;
-        }
-        else if (action.type == 'changeStatus') { 
-            let newDataUpdate = {
-                acc : action.data.typeAcc,
-                name : state[action.data.indexUser].file[action.data.indexLaporan].name,
-                row : state[action.data.indexUser].file[action.data.indexLaporan].row
-            }
-            state[action.data.indexUser].file.splice(action.data.indexLaporan, 1, newDataUpdate);
-            return state;
-        }
-        else{
-            console.log('tryForLaporan');
-            return 0
-        }
-    }
-}
+//     if (typeof state === 'undefined') {
+//         return [];
+//     }
+//     else{
+//         if (action.type == 'initValue') {
+//             return action.data;
+//         }
+//         else if (action.type == 'changeStatus') { 
+//             let newDataUpdate = {
+//                 acc : action.data.typeAcc,
+//                 name : state[action.data.indexUser].file[action.data.indexLaporan].name,
+//                 row : state[action.data.indexUser].file[action.data.indexLaporan].row
+//             }
+//             state[action.data.indexUser].file.splice(action.data.indexLaporan, 1, newDataUpdate);
+//             return {
+//                 ...state
+//             }
+//         }
+//         else{
+//             console.log('tryForLaporan');
+//             return {
+//                 ...state,
+//             }
+//         }
+//     }
+// }
 
 async function mainUseless() {
     var attr = await AsyncStorage.getItem('attrLogin');
@@ -75,70 +59,86 @@ async function mainUseless() {
     }
 }
 
-function imageLogin(state, action) {
+
+function reduxAsisten(state, action) {
     if (typeof state === 'undefined') {
-        var json = mainUseless();
-        return json;
+        return {
+            fromNotif: false,
+            dataNilaiSiswa: null,
+            imageLogin: mainUseless(),
+            dataLaporan: [],
+            count: {
+                Minutes : 0,
+                Seconds : 0,
+                praktikum: "Tidak ada praktikum"
+           }
+        }
     }
-    else{
-        if (action.type == 'fromLogin') {
-            return {
+    else if(action.type == 'dataNilaiSiswa') {
+        return {
+            ...state, 
+            dataNilaiSiswa: action.data
+        }
+    }
+    else if(action.type == "kirim") {
+        return {
+            ...state,
+            count: action.value
+        }
+    }
+    else if(action.type == 'initValue') {
+        return {
+            ...state,
+            dataLaporan: action.data
+        }
+    }
+    else if(action.type == 'changeStatus') {
+        let newDataUpdate = {
+            acc : action.data.typeAcc,
+            name : state[action.data.indexUser].file[action.data.indexLaporan].name,
+            row : state[action.data.indexUser].file[action.data.indexLaporan].row
+        }
+        state[action.data.indexUser].file.splice(action.data.indexLaporan, 1, newDataUpdate);
+        return {
+            ...state,
+        }
+    }
+
+    else if(action.type == 'fromGallery') {
+        return {
+            ...state,
+            imageLogin: {
+                _55: {
+                    name : state.imageLogin._55.name,
+                    img : action.data,
+                }
+            }
+        }
+    }
+
+    else if(action.type == 'fromLogin') {
+        return {
+            ...state, 
+            imageLogin: {
                 _55 : {
                     img : action.data.img,
                     name : action.data.name,
                 }
             }
         }
-        else if(action.type == 'fromGallery') {
-            return {
-                _55 : {
-                    img : action.data,
-                    name : state['_55'].name
-                }
-            };
-        }
-        else{
-            return {
-                _55 : {
-                    img : action.data,
-                    name : state['_55'].name
-                }
-            };
-        }
-
     }
-}
 
-function dataNilaiSiswa(state, action) {
-    if (typeof state === 'undefined') {
-        return null
-    }
-    else {
+    else if(action.type == 'setData') {
         return {
-            data : action.data
+            ...state,
+            data: action.data
         }
     }
 }
 
-function fromNotif(state, action) {
-    if (typeof state === 'undefined') {
-        return false;
-    }
-    else{
-        return true;
-    }
-}
-
-let store = createStore(combineReducers(
-    { 
-        count: counter,
-        dataLaporan: tryForLaporan, 
-        imageLogin: imageLogin, 
-        dataNilaiSiswa: dataNilaiSiswa, 
-        fromNotif: fromNotif
-    }
-));
-let CountContainer = App; //connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin, dataNilaiSiswa : state.dataNilaiSiswa, fromNotif : state.fromNotif }))(App);
+let store = createStore(combineReducers({ reduxAsisten: reduxAsisten}));
+let CountContainer = App; 
+//connect(state => ({ count: state.count, dataLaporan : state.dataLaporan, imageLogin : state.imageLogin, dataNilaiSiswa : state.dataNilaiSiswa, fromNotif : state.fromNotif }))(App);
 
 const ConterEvent = async (data) => {
     store.dispatch({type : 'kirim', value : data});
