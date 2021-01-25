@@ -190,7 +190,7 @@ class Items extends React.PureComponent {
                         <Text style={{color: '#517fa4', fontWeight: 'bold'}}>Laporan Ke.{this.state.row} - { this.state.name != undefined && this.state.acc == 0 ? 'Wait' : this.state.acc == 2 && this.state.name == undefined ? 'Reject' : this.state.name && this.state.acc == 1 ? 'Acc' : 'Kosong' }</Text>
                     </View>
                     <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-around'}}>
-                        <TouchableOpacity onPress={ () => this.sendReport(1) } disabled={this.state.acc == 1 || this.state.name ? true : false} style={[css.bundar, {borderColor: '#517fa4', borderWidth: 1}]}>
+                        <TouchableOpacity onPress={ () => this.sendReport(1) } disabled={this.state.acc == 1 || this.state.name == undefined ? true : false} style={[css.bundar, {borderColor: '#517fa4', borderWidth: 1}]}>
                             <Icon name="check-square" color="#517fa4"  type="font-awesome" />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={ () => this.sendReport(2) } disabled={this.props.laporan.name != null ? false : true} style={[css.bundar, {borderColor: '#517fa4', borderWidth: 1}]}>

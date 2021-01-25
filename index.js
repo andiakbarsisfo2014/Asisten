@@ -95,10 +95,10 @@ function reduxAsisten(state, action) {
     else if(action.type == 'changeStatus') {
         let newDataUpdate = {
             acc : action.data.typeAcc,
-            name : state[action.data.indexUser].file[action.data.indexLaporan].name,
-            row : state[action.data.indexUser].file[action.data.indexLaporan].row
+            name : state.dataLaporan[action.data.indexUser].file[action.data.indexLaporan].name,
+            row : state.dataLaporan[action.data.indexUser].file[action.data.indexLaporan].row
         }
-        state[action.data.indexUser].file.splice(action.data.indexLaporan, 1, newDataUpdate);
+        state.dataLaporan[action.data.indexUser].file.splice(action.data.indexLaporan, 1, newDataUpdate);
         return {
             ...state,
         }
