@@ -14,12 +14,20 @@ import java.util.ArrayList;
 import com.asistens.BuildConfig;
 import com.asistens.R;
 
+// @react-native-community/toolbar-android
+import com.reactnativecommunity.toolbarandroid.ReactToolbarPackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
+// react-native-screens
+import com.swmansion.rnscreens.RNScreensPackage;
+// react-native-svg
+import com.horcrux.svg.SvgPackage;
 // react-native-vector-icons
 import com.oblador.vectoricons.VectorIconsPackage;
+// react-native-view-pdf
+import com.rumax.reactnative.pdfviewer.PDFViewPackage;
 // react-native-webview
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 
@@ -67,9 +75,13 @@ public class PackageList {
   public ArrayList<ReactPackage> getPackages() {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
+      new ReactToolbarPackage(),
       new RNGestureHandlerPackage(),
       new ReanimatedPackage(),
+      new RNScreensPackage(),
+      new SvgPackage(),
       new VectorIconsPackage(),
+      new PDFViewPackage(),
       new RNCWebViewPackage()
     ));
   }
