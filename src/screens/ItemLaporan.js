@@ -48,6 +48,7 @@ export default class ItemLaporan extends React.PureComponent {
 
     render (){        
         if (!this.state.isFirst) {
+            
             return(
                 <FlatList 
                     data={this.props.dataLaporan[this.props.navigation.getParam('index')].file}
@@ -99,6 +100,7 @@ class Items extends React.PureComponent {
             name : this.props.laporan.name,
             acc : this.props.laporan.acc,
             typeAcc : 0,
+            nilai: this.props.laporan.nilai !== null ? this.props.laporan.nilai : 0,
         }
     }
 

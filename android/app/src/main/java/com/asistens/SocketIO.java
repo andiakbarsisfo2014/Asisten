@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class SocketIO {
     private static final String protocol = "https:";
     private static final String ADDRESS = "gowtechno.com/akbar-app/web-API";
-    private static final String SOCKET_ADDRESS = "asistensi.gowtehcno.com";
+    private static final String SOCKET_ADDRESS = "asistensi.gowtehcno.com/socket.io";
     private static final String SOCKET_PORT = "3000";
     private static final String comeFrom = "mobile";
     StorageReact storageReact;
@@ -32,14 +32,15 @@ public class SocketIO {
         Socket mSocket = null;
         try {
             IO.Options opts = new IO.Options();
-            opts.timeout = 60 * 1000;
+            opts.timeout = 25 * 1000;
             opts.reconnection = true;
             opts.forceNew = true;
             opts.query  = "loginAs=" + this.loginAs + "&token=" + this.token +"&comeFrom=mobile";
             opts.transports = new String[] {"websocket"};
             opts.upgrade = false;
-            mSocket = IO.socket(protocol + "//" + SOCKET_ADDRESS + ":" + SOCKET_PORT +"/", opts);
-        } catch (URISyntaxException e) {}
+            mSocket = IO.socket("http://103.55.216.17:3000", opts);
+        } catch (URISyntaxException e) {
+        }
         return mSocket;
     }
 

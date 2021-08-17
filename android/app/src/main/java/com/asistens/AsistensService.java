@@ -120,7 +120,7 @@ public class AsistensService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        
+        Log.w("Asistensi: ", "Hai Socket");
         Context mContext = getApplicationContext();
         SocketIO mSocketIO = new SocketIO(mContext);
         Socket socket = mSocketIO.configSocket();
@@ -141,6 +141,7 @@ public class AsistensService extends Service {
             @Override
             public void call(final Object... dataRespopn) {
                 JSONObject data = (JSONObject) dataRespopn[0];
+                Log.w("Asistensi: ", "Notifikasi");
                 try {
                     if(data.getBoolean("allow_count")) {
                         generateNotif(data.getString("praktikum"));

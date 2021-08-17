@@ -74,7 +74,6 @@ export default class Approved extends React.Component {
         this.setState({
             isLoading : false,
             wrong : false,
-            // users : json.response.data
         });
         this.props.dispatch({type : 'initValue', data : json.response.data})
     }
@@ -183,40 +182,39 @@ class Item extends React.PureComponent {
     }
   }
 
-  class ItemLaporan extends React.PureComponent {
-    constructor(props) {
-        super(props);
-    }
+//   class ItemLaporan extends React.PureComponent {
+//     constructor(props) {
+//         super(props);
+//     }
 
-    readFile = (file) => {
-        this.props.navigation.navigate('PdfRead', {fileName : ConfigAPI.img_url + '/public' + file});
-    }
+//     readFile = (file) => {
+//         this.props.navigation.navigate('PdfRead', {fileName : ConfigAPI.img_url + '/public' + file});
+//     }
 
 
 
-    render (){
-
-        return(
-            <View style={css.box}>
-                <View style={css.labelLaporan}>
-                    <Text style={{fontWeight: 'bold'}}>Laporan Ke.{this.props.items.row} - { this.props.items.name != undefined && this.props.items.acc == 0 ? 'Wait' : this.props.items.acc == 2 ? 'Reject' : this.props.items.name != undefined && this.props.items.acc == 1 ? 'Acc' : 'Kosong' }</Text>
-                </View>
-                <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-around'}}>
-                    <TouchableOpacity style={css.bundar} onPress={() => this.readFile(this.props.items.name)}>
-                        <Icon name="check-square" color="#fff"  type="font-awesome" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={css.bundar}>
-                        <Icon name="ban" color="#fff"  type="font-awesome" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={css.bundar}>
-                        <Icon name="eye" color="#fff"  type="font-awesome" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
+//     render (){
+//         return(
+//             <View style={css.box}>
+//                 <View style={css.labelLaporan}>
+//                     <Text style={{fontWeight: 'bold'}}>Laporan Keas.{this.props.items.row} - { this.props.items.name != undefined && this.props.items.acc == 0 ? 'Wait' : this.props.items.acc == 2 ? 'Reject' : this.props.items.name != undefined && this.props.items.acc == 1 ? 'Acc' : 'Kosong' }</Text>
+//                 </View>
+//                 <View style={{flex : 1, flexDirection : 'row', justifyContent : 'space-around'}}>
+//                     <TouchableOpacity style={css.bundar} onPress={() => this.readFile(this.props.items.name)}>
+//                         <Icon name="check-square" color="#fff"  type="font-awesome" />
+//                     </TouchableOpacity>
+//                     <TouchableOpacity style={css.bundar}>
+//                         <Icon name="ban" color="#fff"  type="font-awesome" />
+//                     </TouchableOpacity>
+//                     <TouchableOpacity style={css.bundar}>
+//                         <Icon name="eye" color="#fff"  type="font-awesome" />
+//                     </TouchableOpacity>
+//                 </View>
+//             </View>
+//         )
         
-    }
-}
+//     }
+// }
 
 
 class Judul extends React.PureComponent {

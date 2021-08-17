@@ -120,7 +120,7 @@ export default class Absen extends React.Component {
 
     myTitle = (index, item, navigation) => {
         return (
-            <Text style={{fontWeight : 'bold', fontSize : 17, color: '#517fa4'}}>Pertemuan Ke. {index + 1}</Text>
+            <Text style={{fontWeight : 'bold', fontSize : 17, color: '#517fa4'}}>Pertemuan Ke. {index + 1}. Skor: {item.nilai} </Text>
         )
     }
 
