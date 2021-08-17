@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, FlatList, InteractionManager, ActivityIndicator} from 'react-native';
+import {Text, View, FlatList, InteractionManager, ActivityIndicator, AsyncStorage} from 'react-native';
 import {ListItem, Icon} from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ConfigAPI from '../config/ConfigAPI';
@@ -22,8 +22,41 @@ export default class Absen extends React.Component {
         this.state = {
             data : [],
             isReady : false,
+            isRefresh: false,
         }
     }
+
+    doFecth(kode_kelas){
+        AsyncStorage.getItem('attrLogin').then( (value) => {
+            let json = JSON.parse(value);
+            fetch(ConfigAPI.link + 'get-my-absen', {
+                method : 'POST',
+                headers : {
+                    Accept : 'application/json',
+                    'Content-Type' : 'application/json',
+                    Authorization : json.token,
+                },
+                body : JSON.stringify({
+                    kode_kelas : kode_kelas,
+                })
+            }).then(response => response.json())
+            .then( (response) => {
+                this.setState({isRefresh : false})
+                this.props.dispatch({type : 'setData', data : response.response})
+            }).catch( (error) => {
+                console.log(error);
+                this.setState({
+                    isRefresh : false,
+                });
+                ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
+            })
+        })
+    }
+
+    onRefresh() {
+        this.setState({isRefresh: true}, () => {this.doFecth(this.props.navigation.state.params.kode_kelas)})
+    }
+
     componentDidMount () {
         InteractionManager.runAfterInteractions( () => {
             this.setState({isReady : true})
@@ -109,6 +142,8 @@ export default class Absen extends React.Component {
                 {!this.state.isReady ? <ActivityIndicator /> :
                     <FlatList
                         data ={this.props.dataNilaiSiswa.data.akses.data}
+                        refreshing = {this.state.isRefresh}
+                        onRefresh = {() => this.onRefresh()}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem = { ({index, item}) => (
                             this.myListItem(index,item, this.props.navigation)

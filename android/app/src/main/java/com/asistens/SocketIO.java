@@ -10,9 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SocketIO {
-    private static final String protocol = "http:";
-    private static final String ADDRESS = "192.168.88.122/web-asisten";
-    private static final String SOCKET_ADDRESS = "192.168.88.122";
+    private static final String protocol = "https:";
+    private static final String ADDRESS = "gowtechno.com/akbar-app/web-API";
+    private static final String SOCKET_ADDRESS = "asistensi.gowtehcno.com";
     private static final String SOCKET_PORT = "3000";
     private static final String comeFrom = "mobile";
     StorageReact storageReact;

@@ -142,7 +142,7 @@ export default class Praktikum extends React.Component {
         })
     }
 
-    checkNilai = (kode_kelas, judul) => {
+    checkNilai = (kode_kelas, judul, isNavigate = true) => {
         if (this.props.dataNilaiSiswa == null || this.state.kode_kelas != kode_kelas) {
             if (this.state.active < 0) {
                 ToastAndroid.show('Pilih Kategori Nilai !!', ToastAndroid.SHORT);
@@ -164,8 +164,10 @@ export default class Praktikum extends React.Component {
                     .then( (response) => {
                         this.setState({isRequestNilai : false, kode_kelas : kode_kelas})
                         this.props.dispatch({type : 'setData', data : response.response})
-                        let gotoPage = this.state.menu[this.state.active].name;
-                        this.props.navigation.navigate(gotoPage, {kode_kelas : kode_kelas});  
+                        let gotoPage = this.state.menu[this.state.active].name;  
+                        this.props.navigation.navigate(gotoPage, {
+                            kode_kelas : kode_kelas,
+                        });
                     }).catch( (error) => {
                         console.log(error);
                         this.setState({
@@ -173,8 +175,7 @@ export default class Praktikum extends React.Component {
                         });
                         ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
                     })
-                })
-                
+                })                
             }
         }
         else{
